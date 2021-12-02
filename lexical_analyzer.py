@@ -43,14 +43,14 @@ for i in noSpaceCode:
     for position, token in enumerate(tokens):
         # print(token)
 
-        if prev == 2:               # catches string literal
+        if prev == my.STRING_DELIMITER:               # catches string literal
             if (token != "\""):
                 print(token, end=" ")
                 continue
             else:
                 print("- string literal")
                 print(token, "- delimiter_string")
-                prev = 0
+                prev = 0                              # reset value of prev
 
         elif re.match(my.RE_btw_kw, token):
             print(token, "- comment keyword")
@@ -61,14 +61,14 @@ for i in noSpaceCode:
             break                                       # proceed to next line
 
         elif re.match(my.RE_obtw_kw, token):
-            prev = 1
+            prev = my.COMMENT
             print(token, "- multi-line comment keyword")
         
         elif re.match(my.RE_tldr_kw, token):
-            prev = 0
+            prev = 0                        # reset value of prev
             print(token, "- multi-line comment keyword")
 
-        elif prev == 1:                     # catching multi-line comments
+        elif prev == my.COMMENT:            # catching multi-line comments
             if position == 0:               # whole line is a comment
                 str1 = " ".join(tokens)
                 print(str1, "- comment")    
@@ -170,7 +170,7 @@ for i in noSpaceCode:
         
         else:   # delimiters
             if token in my.RE_delimiters:       # delimiter_string
-                prev = 2                        # define prev 2 = string delimiter
+                prev = my.STRING_DELIMITER
                 print(token, "- delimiter_string")
                 
 
