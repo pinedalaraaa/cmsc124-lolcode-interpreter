@@ -55,7 +55,12 @@ RE_til_kw = "(^TIL$)"
 RE_wile_kw = "(^WILE$)"
 RE_imouttayr_kw = "(^IM OUTTA YR$)"
 RE_delimiters = "\""          # string delimiter lang ba meron sa lolcode?
-
+RE_howizi_kw = "(^HOW IZ I$)"
+RE_ifusayso_kw = "(^IF U SAY SO$)"
+RE_gtfo_kw = "(^GTFO$)"
+RE_foundyr_kw = "(^FOUND YR$)"
+RE_iiz_kw = "(^I IZ$)"
+RE_mkay_kw = "(^MKAY$)"
 
 # Multi-word lexemes
 mwe = MWETokenizer([("I", "HAS", "A"), ("SUM", "OF"), ("DIFF", "OF"),
@@ -64,7 +69,8 @@ mwe = MWETokenizer([("I", "HAS", "A"), ("SUM", "OF"), ("DIFF", "OF"),
                     ("EITHER", "OF"), ("WON", "OF"), ("ANY", "OF"),
                     ("BOTH", "SAEM"), ("IS", "NOW", "A"), ("O", "RLY?"),
                     ("YA", "RLY"), ("NO", "WAI"), ("IM", "IN", "YR"),
-                    ("IM", "OUTTA", "YR")], separator = " ")
+                    ("IM", "OUTTA", "YR"), ("HOW", "IZ", "I"), ("IF", "U", "SAY", "SO"), 
+                    ("FOUND", "YR"), ("I", "IZ")], separator = " ")
 
 
 # Values to be passed to 'prev' variable in lexical_analyzer.py to indicate that these were encountered

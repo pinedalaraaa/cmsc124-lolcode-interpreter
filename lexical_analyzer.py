@@ -32,7 +32,7 @@ def remove_Spaces(program):
     return scanned_Program
 
 noSpaceCode = remove_Spaces(source_code)
-print(noSpaceCode)
+#print(noSpaceCode)
 
 
 prev = 0
@@ -115,8 +115,8 @@ for i in noSpaceCode:
             print(token, "- typecasting")
         
         elif re.match(my.RE_a_kw, token):
-            print(token, "- A")                 # di ko pa alam ano tawag dito
-        
+            print(token, "- typecasting")                 # di ko pa alam ano tawag dito
+                                                            #for typecasting din
         elif re.match(my.RE_visible_kw, token):
             print(token, "- output keyword")
         
@@ -167,6 +167,15 @@ for i in noSpaceCode:
 
         elif re.match(my.RE_identifiers, token):
             print(token, "- identifier")
+            
+        elif re.match(my.RE_howizi_kw, token) or re.match(my.RE_ifusayso_kw, token):
+            print(token, "- function delimiter")
+            
+        elif re.match(my.RE_gtfo_kw, token) or re.match(my.RE_foundyr_kw, token):
+            print(token, "- return keyword")
+            
+        elif re.match(my.RE_iiz_kw, token) or re.match(my.RE_mkay_kw, token):
+            print(token, "- function call delimiter")
         
         else:   # delimiters
             if token in my.RE_delimiters:       # delimiter_string
