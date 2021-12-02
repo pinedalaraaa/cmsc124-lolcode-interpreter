@@ -65,3 +65,8 @@ mwe = MWETokenizer([("I", "HAS", "A"), ("SUM", "OF"), ("DIFF", "OF"),
                     ("BOTH", "SAEM"), ("IS", "NOW", "A"), ("O", "RLY?"),
                     ("YA", "RLY"), ("NO", "WAI"), ("IM", "IN", "YR"),
                     ("IM", "OUTTA", "YR")], separator = " ")
+
+
+# Values to be passed to 'prev' variable in lexical_analyzer.py to indicate that these were encountered
+COMMENT = 1
+STRING_DELIMITER = 2
