@@ -23,7 +23,7 @@ source_code = program.split('\n')
 # print(source_code)
 
 
-# Function that puts the lines in the file into a list
+# Function that puts each line into a list
 def remove_Spaces(program):
     scanned_Program = []
     for line in program:                            # Reads per line
@@ -32,20 +32,27 @@ def remove_Spaces(program):
     return scanned_Program
 
 noSpaceCode = remove_Spaces(source_code)
-# print(noSpaceCode)
+print(noSpaceCode)
 
 
-# Removes whitespaces
-# kailangan maidentify na literals yung token if may naencounter na string and wala pa yung end ng string
-# kailangan maidentify na comment lahat ng string sa lines sa scope ng OBTW and TLDR
 prev = 0
 for i in noSpaceCode:
-    tokens = my.mwe.tokenize(wordpunct_tokenize(i))
+    tokens = my.mwe.tokenize(wordpunct_tokenize(i))     # Tokenizes the line
     # print(tokens)
 
     for position, token in enumerate(tokens):
         # print(token)
-        if re.match(my.RE_btw_kw, token):
+
+        if prev == 2:               # catches string literal
+            if (token != "\""):
+                print(token, end=" ")
+                continue
+            else:
+                print("- string literal")
+                print(token, "- delimiter_string")
+                prev = 0
+
+        elif re.match(my.RE_btw_kw, token):
             print(token, "- comment keyword")
 
             for j in range(position + 1, len(tokens)):  # catch single-line comments
@@ -66,8 +73,7 @@ for i in noSpaceCode:
                 str1 = " ".join(tokens)
                 print(str1, "- comment")    
             else:                           # comment is places the same line as the comment keyword
-                position -= 1                               # move back
-                for j in range(position + 1, len(tokens)):
+                for j in range(position, len(tokens)):
                     print(tokens[j], end=" ")               # end=" " replaces the default newline for printing with a whitespace
                 print("- comment")
             break                                           # proceed to next line
@@ -150,11 +156,22 @@ for i in noSpaceCode:
         elif re.match(my.RE_til_kw, token) or re.match(my.RE_wile_kw, token):
             print(token, "- terminating condition keyword")
 
+        elif re.match(my.RE_literal_numbr, token):
+            print(token, "- numbr literal")
+        
+        elif re.match(my.RE_literal_numbar, token):
+            print(token, "- numbar literal")
+
+        elif re.match(my.RE_literal_troof, token):
+            print(token, "- troof literal")
+
         elif re.match(my.RE_identifiers, token):
             print(token, "- identifier")
-
-        elif re.match(my.RE_literals, token):
-            print(token, "- literal")
         
+        else:   # delimiters
+            if token in my.RE_delimiters:       # delimiter_string
+                prev = 2                        # define prev 2 = string delimiter
+                print(token, "- delimiter_string")
+                
 
 root.mainloop()
