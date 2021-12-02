@@ -1,21 +1,19 @@
 from nltk.tokenize import MWETokenizer
 
 #list of regular expressions
-RE_identifiers = "(^[a-zA-Z][a-zA-Z0-9_]*$)"
-# RE_literals = "(^-?[1-9][0-9]*$|^0$)|(^-?[0-9]*\.[0-9]+$)^WIN$|^FAIL$)"
-RE_literal_numbr = "(^-?[1-9][0-9]*$|^0$)"
-RE_literal_numbar = "(^-?[0-9]*\.[0-9]+$)"
-# RE_literal_yarn = "(^”.*”$)"
-RE_literal_troof = "(^WIN$|^FAIL$)"
-RE_data_type = "(^(TROOF)$|^(NUMBR)$|^(NUMBAR)$|^(YARN)$|^(TYPE)$)"
-RE_hai_kw = "(^HAI$)"
-RE_kthxbye_kw = "(^KTHXBYE$)"
-RE_btw_kw = "(^BTW$)"
-RE_obtw_kw = "(^OBTW$)"
-RE_tldr_kw =  "(^TLDR$)"
-RE_ihasa_kw = "(^I HAS A$)"
-RE_itz_kw = "(^ITZ$)"
-RE_r_kw = "(^R$)"
+RE_identifiers = "^[a-zA-Z][a-zA-Z0-9_]*$"
+RE_literal_numbr = "^-?[1-9][0-9]*$|^0$"
+RE_literal_numbar = "^-?[0-9]*\.[0-9]+$"
+RE_literal_troof = "^WIN$|^FAIL$"
+RE_data_type = "^(TROOF)$|^(NUMBR)$|^(NUMBAR)$|^(YARN)$|^(TYPE)$"
+RE_hai_kw = "^HAI$"
+RE_kthxbye_kw = "^KTHXBYE$"
+RE_btw_kw = "^BTW$"
+RE_obtw_kw = "^OBTW$"
+RE_tldr_kw =  "^TLDR$"
+RE_ihasa_kw = "^I HAS A$"
+RE_itz_kw = "^ITZ$"
+RE_r_kw = "^R$"
 RE_it_kw = "^IT$"
 RE_an_kw = "^AN$"
 RE_sumof_kw = "SUM OF"
@@ -54,7 +52,7 @@ RE_yr_kw = "(^YR$)"
 RE_til_kw = "(^TIL$)"
 RE_wile_kw = "(^WILE$)"
 RE_imouttayr_kw = "(^IM OUTTA YR$)"
-RE_delimiters = "\""          # string delimiter lang ba meron sa lolcode?
+RE_delimiters = "\""
 RE_howizi_kw = "(^HOW IZ I$)"
 RE_ifusayso_kw = "(^IF U SAY SO$)"
 RE_gtfo_kw = "(^GTFO$)"
@@ -74,5 +72,6 @@ mwe = MWETokenizer([("I", "HAS", "A"), ("SUM", "OF"), ("DIFF", "OF"),
 
 
 # Values to be passed to 'prev' variable in lexical_analyzer.py to indicate that these were encountered
-COMMENT = 1
-STRING_DELIMITER = 2
+SINGLE_LINE_COMMENT = 1
+MULTI_LINE_COMMENT = 2
+STRING_DELIMITER = 3
