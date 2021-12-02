@@ -36,47 +36,28 @@ noSpaceCode = remove_Spaces(source_code)
 
 
 # Removes whitespaces
-# kailangan maidentify na literals yung token if may naencounter na string and wala pa yung end ng string
+# kailangan maidentify na literals yung token if may naencounter na string adn wala pa yung end ng string
+# kailangan maidentify na comments lahat ng string sa same line and after ng BTW (pwedeng new line siguro yung indicator? kaso nasstrip na kasi sa taas yung \n)
 # kailangan maidentify na comment lahat ng string sa lines sa scope ng OBTW and TLDR
-prev = 0
 for i in noSpaceCode:
     tokens = my.mwe.tokenize(wordpunct_tokenize(i))
-    # print(tokens)
-
-    for position, token in enumerate(tokens):
+    for token in tokens:
         # print(token)
-        if re.match(my.RE_btw_kw, token):
-            print(token, "- comment keyword")
 
-            for j in range(position + 1, len(tokens)):  # catch single-line comments
-                print(tokens[j], end=" ")               # end=" " replaces the default newline for printing with a whitespace
-            print("- comment")
-            break                                       # proceed to next line
-
-        elif re.match(my.RE_obtw_kw, token):
-            prev = 1
-            print(token, "- multi-line comment keyword")
-        
-        elif re.match(my.RE_tldr_kw, token):
-            prev = 0
-            print(token, "- multi-line comment keyword")
-
-        elif prev == 1:                     # catching multi-line comments
-            if position == 0:               # whole line is a comment
-                str1 = " ".join(tokens)
-                print(str1, "- comment")    
-            else:                           # comment is places the same line as the comment keyword
-                position -= 1                               # move back
-                for j in range(position + 1, len(tokens)):
-                    print(tokens[j], end=" ")               # end=" " replaces the default newline for printing with a whitespace
-                print("- comment")
-            break                                           # proceed to next line
-
-        elif re.match(my.RE_hai_kw, token) or re.match(my.RE_kthxbye_kw, token):
+        if re.match(my.RE_hai_kw, token) or re.match(my.RE_kthxbye_kw, token):
             print(token, "- code delimiter")
-        
+
         elif re.match(my.RE_data_type, token):
             print(token, "- data type")
+        
+        elif re.match(my.RE_btw_kw, token):
+            print(token, "- single-line comment")
+
+        elif re.match(my.RE_obtw_kw, token):
+            print(token, "- multi-line comment start")
+        
+        elif re.match(my.RE_tldr_kw, token):
+            print(token, "- multi-line comment end")
 
         elif re.match(my.RE_ihasa_kw, token):
             print(token, "- variable declaration")
@@ -86,10 +67,7 @@ for i in noSpaceCode:
 
         elif re.match(my.RE_r_kw, token):
             print(token, "- assignment operator")
-
-        elif re.match(my.RE_an_kw, token):
-            print(token, "- separator")
-
+            
         elif token in [my.RE_sumof_kw, my.RE_diffof_kw, my.RE_produktof_kw,
                         my.RE_quoshuntof_kw, my.RE_modof_kw, my.RE_biggrof_kw,
                         my.RE_smallrof_kw]:
