@@ -7,7 +7,7 @@ Created on Wed Dec  1 23:14:43 2021
 
 
 import re
-from nltk.tokenize import MWETokenizer
+import tokens as my
 from nltk.tokenize import wordpunct_tokenize
 from tkinter import Tk
 from tkinter import filedialog
@@ -22,65 +22,6 @@ program = file.read()
 source_code = program.split('\n')
 # print(source_code)
 
-#list of regular expressions
-RE_identifiers = "(^[a-zA-Z][a-zA-Z0-9_]*$)|(^[a-zA-Z][a-zA-Z0-9_]*$)|(^[a-zA-Z][a-zA-Z0-9_]*$)"
-RE_literals = "(^-?[1-9][0-9]*$|^0$)|(^-?[0-9]*\.[0-9]+$)|(^”.*”$)|(^WIN$|^FAIL$)|(^(TROOF)$|^(NUMBR)$|^(NUMBAR)$|^(YARN)$|^(TYPE)$)"
-RE_hai_kw = "(^HAI$)"
-RE_kthxbye_kw = "(^KTHXBYE$)"
-RE_btw_kw = "(^BTW$)"
-RE_obtw_kw = "(^OBTW$)"
-RE_tldr_kw =  "(^TLDR$)"
-RE_ihasa_kw = "(^I HAS A$)"
-RE_itz_kw = "(^ITZ$)"
-RE_r_kw = "(^R$)"
-RE_sumof_kw = "(^SUM OF$)"
-RE_diffof_kw = "(^DIFF OF$)"
-RE_produktof_kw = "(^PRODUKT OF$)"
-RE_quoshuntof_kw = "(^QUOSHUNT OF$)"
-RE_modof_kw = "(^MOD OF$)"
-RE_biggrof_kw = "(^BIGGR OF$)"
-RE_smallrof_kw = "(^SMALLR OF$)"
-RE_bothof_kw = "(^BOTH OF$)"
-RE_eitherof_kw = "(^EITHER OF$)"
-RE_wonof_kw = "(^WON OF$)"
-RE_not_kw = "(^NOT$)"
-RE_anyof_kw = "(^ANY OF$)"
-RE_allof_kw = "(^ALL OF$)"
-RE_bothsaem_kw = "(^BOTH SAEM$)"
-RE_diffrint_kw = "(^DIFFRINT$)"
-RE_smoosh_kw = "(^SMOOSH$)"
-RE_maek_kw = "(^MAEK$)"
-RE_a_kw = "(^A$)"
-RE_isnowa_kw = "(^IS NOW A$)"
-RE_visible_kw = "(^VISIBLE$)"
-RE_gimmeh_kw = "(^GIMMEH$)"
-RE_oryl_kw = "(^O RLY\?$)"
-RE_yarly_kw = "(^YA RLY$)"
-RE_mebbe_kw = "(^MEBBE$)"
-RE_nowai_kw = "(^NO WAI$)"
-RE_oic_kw = "(^OIC$)"
-RE_wtf_kw = "(^WTF\?$)"
-RE_omg_kw = "(^OMG$)"
-RE_omgwtf_kw = "(^OMGWTF$)"
-RE_iminyr_kw = "(^IM IN YR$)"
-RE_uppin_kw = "(^UPPIN$)"
-RE_nerfin_kw = "(^NERFIN$)"
-RE_yr_kw = "(^YR$)"
-RE_til_kw = "(^TIL$)"
-RE_wile_kw = "(^WILE$)"
-RE_imouttayr_kw = "(^IM OUTTA YR$)"
-
-
-# Multi-word lexemes
-mwe = MWETokenizer([("I", "HAS", "A"), ("SUM", "OF"), ("DIFF", "OF"),
-                    ("PRODUKT", "OF"), ("QUOSHUNT", "OF"), ("MOD", "OF"),
-                    ("BIGGR", "OF"), ("SMALLR", "OF"), ("BOTH", "OF"),
-                    ("EITHER", "OF"), ("WON", "OF"), ("ANY", "OF"),
-                    ("BOTH", "SAEM"), ("IS", "NOW", "A"), ("O", "RLY?"),
-                    ("YA", "RLY"), ("NO", "WAI"), ("IM", "IN", "YR"),
-                    ("IM", "OUTTA", "YR")], separator = " ")
-
-
 
 # Function that puts the lines in the file into a list
 def remove_Spaces(program):
@@ -91,15 +32,107 @@ def remove_Spaces(program):
     return scanned_Program
 
 noSpaceCode = remove_Spaces(source_code)
-print(noSpaceCode)
+# print(noSpaceCode)
 
 
 # Removes whitespaces
+# kailangan maidentify na literals yung token if may naencounter na string adn wala pa yung end ng string
+# kailangan maidentify na comments lahat ng string sa same line and after ng BTW (pwedeng new line siguro yung indicator? kaso nasstrip na kasi sa taas yung \n)
+# kailangan maidentify na comment lahat ng string sa lines sa scope ng OBTW and TLDR
 for i in noSpaceCode:
-    tokens = mwe.tokenize(wordpunct_tokenize(i))
+    tokens = my.mwe.tokenize(wordpunct_tokenize(i))
     for token in tokens:
-        print(token)
-    
-    
+        # print(token)
+
+        if re.match(my.RE_hai_kw, token) or re.match(my.RE_kthxbye_kw, token):
+            print(token, "- code delimiter")
+
+        elif re.match(my.RE_data_type, token):
+            print(token, "- data type")
+        
+        elif re.match(my.RE_btw_kw, token):
+            print(token, "- single-line comment")
+
+        elif re.match(my.RE_obtw_kw, token):
+            print(token, "- multi-line comment start")
+        
+        elif re.match(my.RE_tldr_kw, token):
+            print(token, "- multi-line comment end")
+
+        elif re.match(my.RE_ihasa_kw, token):
+            print(token, "- variable declaration")
+        
+        elif re.match(my.RE_itz_kw, token):
+            print(token, "- variable initialization")
+
+        elif re.match(my.RE_r_kw, token):
+            print(token, "- assignment operator")
+            
+        elif token in [my.RE_sumof_kw, my.RE_diffof_kw, my.RE_produktof_kw,
+                        my.RE_quoshuntof_kw, my.RE_modof_kw, my.RE_biggrof_kw,
+                        my.RE_smallrof_kw]:
+            print(token, "- arithmetic operator")
+
+        elif token in [my.RE_bothof_kw, my.RE_eitherof_kw, my.RE_wonof_kw,
+                        my.RE_not_kw, my.RE_anyof_kw, my.RE_allof_kw]:
+            print(token, "- boolean operator")
+
+        elif re.match(my.RE_bothsaem_kw, token) or re.match(my.RE_diffrint_kw, token):
+            print(token, "- comparison operator")
+
+        elif re.match(my.RE_smoosh_kw, token):
+            print(token, "- concatenation")
+        
+        elif re.match(my.RE_maek_kw, token) or re.match(my.RE_isnowa_kw, token):
+            print(token, "- typecasting")
+        
+        elif re.match(my.RE_a_kw, token):
+            print(token, "- A")                 # di ko pa alam ano tawag dito
+        
+        elif re.match(my.RE_visible_kw, token):
+            print(token, "- output keyword")
+        
+        elif re.match(my.RE_gimmeh_kw, token):
+            print(token, "- input keyword")
+
+        elif re.match(my.RE_orly_kw, token):
+            print(token, "- if-then identifier")
+        
+        elif re.match(my.RE_yarly_kw, token):
+            print(token, "- if keyword")
+        
+        elif re.match(my.RE_nowai_kw, token):
+            print(token, "- else keyword")
+        
+        elif re.match(my.RE_oic_kw, token):
+            print(token, "- if-then identifier")
+        
+        elif re.match(my.RE_wtf_kw, token):
+            print(token, "- switch-case identifier")
+        
+        elif re.match(my.RE_omg_kw, token):
+            print(token, "- case keyword")
+        
+        elif re.match(my.RE_omgwtf_kw, token):
+            print(token, "- default case keyword")
+
+        elif re.match(my.RE_iminyr_kw, token) or re.match(my.RE_imouttayr_kw, token):
+            print(token, "- loop keyword")
+
+        elif re.match(my.RE_yr_kw, token):
+            print(token, "- variable identifier")
+
+        elif re.match(my.RE_uppin_kw, token) or re.match(my.RE_nerfin_kw, token):
+            print(token, "- loop operation")
+
+        elif re.match(my.RE_til_kw, token) or re.match(my.RE_wile_kw, token):
+            print(token, "- terminating condition keyword")
+
+        elif re.match(my.RE_identifiers, token):
+            print(token, "- identifier")
+
+        elif re.match(my.RE_literals, token):
+            print(token, "- literal")
+        
 
 root.mainloop()
