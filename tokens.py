@@ -2,11 +2,11 @@ from nltk.tokenize import MWETokenizer
 
 #list of regular expressions
 RE_identifiers = "(^[a-zA-Z][a-zA-Z0-9_]*$)"
-RE_literals = "(^-?[1-9][0-9]*$|^0$)|(^-?[0-9]*\.[0-9]+$)|(^”.*”$)|(^WIN$|^FAIL$)"
-# RE_literal_numbr = "(^-?[1-9][0-9]*$|^0$)"
-# RE_literal_numbar = "(^-?[0-9]*\.[0-9]+$)"
+# RE_literals = "(^-?[1-9][0-9]*$|^0$)|(^-?[0-9]*\.[0-9]+$)^WIN$|^FAIL$)"
+RE_literal_numbr = "(^-?[1-9][0-9]*$|^0$)"
+RE_literal_numbar = "(^-?[0-9]*\.[0-9]+$)"
 # RE_literal_yarn = "(^”.*”$)"
-# RE_literal_troof = "(^WIN$|^FAIL$)"
+RE_literal_troof = "(^WIN$|^FAIL$)"
 RE_data_type = "(^(TROOF)$|^(NUMBR)$|^(NUMBAR)$|^(YARN)$|^(TYPE)$)"
 RE_hai_kw = "(^HAI$)"
 RE_kthxbye_kw = "(^KTHXBYE$)"
@@ -54,6 +54,7 @@ RE_yr_kw = "(^YR$)"
 RE_til_kw = "(^TIL$)"
 RE_wile_kw = "(^WILE$)"
 RE_imouttayr_kw = "(^IM OUTTA YR$)"
+RE_delimiters = "\""          # string delimiter lang ba meron sa lolcode?
 
 
 # Multi-word lexemes
