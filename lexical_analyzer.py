@@ -19,9 +19,9 @@ def check_validity(para):
     lexemes = para[3]
 
     if prev == my.STRING_DELIMITER:               # catches string literal
-        if (token not in my.RE_delimiters):
+        if (token not in my.RE_delimiters):       # if the end of string has not been seen yet
             if temp == "":
-                temp = temp + token               # concatenates strings
+                temp = temp + token               # concatenate strings
             else:
                 temp = temp + " " + token
 

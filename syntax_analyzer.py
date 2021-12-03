@@ -9,7 +9,7 @@ def parse(source):
 
     for line in source:                     # Iterate through the source code by line
         tokens = lexer.tokenize_line(line)  # Split line into tokens
-        print(tokens)
+        
         for position, lexeme in enumerate(tokens):      # Checking the lexemes one by one
             para = [lexeme, prev, temp, lexeme_list]    # Parameters to be passed
 
