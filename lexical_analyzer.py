@@ -2,7 +2,7 @@ import re
 import tokens as my
 # import nltk
 # nltk.download('punkt')
-from nltk.tokenize import word_tokenize
+from nltk.tokenize import sent_tokenize, word_tokenize
 
 
 # Tokenizes the line
@@ -17,10 +17,9 @@ def check_validity(para):
     prev = para[1]
     temp = para[2]
     lexemes = para[3]
-    error = 0
 
     if prev == my.STRING_DELIMITER:               # catches string literal
-        if (token != "\""):
+        if (token not in my.RE_delimiters):
             if temp == "":
                 temp = temp + token               # concatenates strings
             else:
