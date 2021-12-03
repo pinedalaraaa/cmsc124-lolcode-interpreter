@@ -72,6 +72,7 @@ mwe = MWETokenizer([("I", "HAS", "A"), ("SUM", "OF"), ("DIFF", "OF"),
 
 
 # Values to be passed to 'prev' variable in lexical_analyzer.py to indicate that these were encountered
-SINGLE_LINE_COMMENT = 1
-MULTI_LINE_COMMENT = 2
-STRING_DELIMITER = 3
+VERSION = 1
+SINGLE_LINE_COMMENT = 2
+MULTI_LINE_COMMENT = 3
+STRING_DELIMITER = 4
