@@ -1,11 +1,13 @@
 import re
 import tokens as my
-from nltk.tokenize import wordpunct_tokenize
+# import nltk
+# nltk.download('punkt')
+from nltk.tokenize import word_tokenize
 
 
 # Tokenizes the line
 def tokenize_line(line):
-    token_list = my.mwe.tokenize(wordpunct_tokenize(line))
+    token_list = my.mwe.tokenize(word_tokenize(line))
     return token_list
 
 
@@ -15,6 +17,7 @@ def check_validity(para):
     prev = para[1]
     temp = para[2]
     lexemes = para[3]
+    error = 0
 
     if prev == my.STRING_DELIMITER:               # catches string literal
         if (token != "\""):
@@ -45,7 +48,15 @@ def check_validity(para):
 
     elif prev == my.MULTI_LINE_COMMENT: return para
 
-    elif re.match(my.RE_hai_kw, token) or re.match(my.RE_kthxbye_kw, token):
+    elif prev == my.VERSION:
+        prev = 0
+        lexemes.append([token, "version_number"])
+
+    elif re.match(my.RE_hai_kw, token):
+        prev = my.VERSION
+        lexemes.append([token, "code_delimiter"])
+
+    elif re.match(my.RE_kthxbye_kw, token):
         lexemes.append([token, "code_delimiter"])
     
     elif re.match(my.RE_data_type, token):
