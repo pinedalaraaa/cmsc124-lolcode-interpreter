@@ -63,3 +63,7 @@ def parse(source):
 # Returns list of lexemes
 def get_lexemes():
     return lexeme_list
+
+def clear():
+    global lexeme_list
+    lexeme_list = []
