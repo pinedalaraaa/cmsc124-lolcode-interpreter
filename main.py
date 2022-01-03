@@ -24,10 +24,13 @@ def loadfile():
 
     file = open(root.filename, 'r')
     program = file.read()
-    code_lines = program.split('\n')   # Splits the contents of the file by line
+    parse_program(program)
 
     editor.delete("1.0", "end")
     editor.insert(1.0, program)
+
+def parse_program(program):
+    code_lines = program.split('\n')   # Splits the contents of the file by line
     source_code = remove_spaces(code_lines)
 
     # Syntax Analyzer
@@ -35,7 +38,6 @@ def loadfile():
     parser.parse(source_code)
     global lexemes
     lexemes = parser.get_lexemes()
-
 
 # Populate Lexeme Table
 def pop_lex():
@@ -52,18 +54,10 @@ def pop_sym():
 
 # Run lolcode program
 def exec_lolcode():
-    # Temporary testing code
     program = editor.get(1.0, 'end')
-    code_lines = program.split('\n')   # Splits the contents of the file by line
+    parse_program(program)
 
-    source_code = remove_spaces(code_lines)
-
-    # Syntax Analyzer
-    parser.clear()
-    parser.parse(source_code)
-    global lexemes
-    lexemes = parser.get_lexemes()
-    
+    # Temporary testing code
     pop_lex()
     pop_sym()
 
