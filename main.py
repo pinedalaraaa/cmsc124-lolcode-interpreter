@@ -53,6 +53,17 @@ def pop_sym():
 # Run lolcode program
 def exec_lolcode():
     # Temporary testing code
+    program = editor.get(1.0, 'end')
+    code_lines = program.split('\n')   # Splits the contents of the file by line
+
+    source_code = remove_spaces(code_lines)
+
+    # Syntax Analyzer
+    parser.clear()
+    parser.parse(source_code)
+    global lexemes
+    lexemes = parser.get_lexemes()
+    
     pop_lex()
     pop_sym()
 
