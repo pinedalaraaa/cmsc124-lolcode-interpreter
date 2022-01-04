@@ -1,6 +1,7 @@
 HAI
 	I HAS A var ITZ 12
-	VISIBLE "noot noot" var
+	VISIBLE "noot noot"
+	VISIBLE var
 	BTW this is a comment
 	OBTW ayo ayo
 		another comment
