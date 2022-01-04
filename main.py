@@ -29,7 +29,6 @@ def loadfile():
     editor.delete("1.0", "end")
     editor.insert(1.0, program)
 
-# Parse raw text into lexemes
 def parse_program(program):
     code_lines = program.split('\n')   # Splits the contents of the file by line
     source_code = remove_spaces(code_lines)
@@ -39,22 +38,26 @@ def parse_program(program):
     parser.table_contents(source_code)
     global lexemes
     lexemes = parser.get_lexemes()
-    
+
+    # Semantic Analyzer
+    lexemes_list = lexemes.copy()       # Creating copy of lexemes
+    sem.program(lexemes_list)
+    global sym_table
+    sym_table = sem.get_variables()
 
 # Populate Lexeme Table
-def populate_lex():
+def pop_lex():
     lex_table.delete(*lex_table.get_children())
     for item in lexemes:    
         if item[0] == "\n": continue    # Skip line breaks
         lex_table.insert('', 'end', text=str(item[0]), values=(str(item[0]), str(item[1])))
 
 # Populate Symbol Table
-def populate_sym():
+def pop_sym():
     # Temporary testing code
     symbol_table.delete(*symbol_table.get_children())
-    for item in lexemes:
-        if item[0] == "\n": continue    # Skip line breaks
-        symbol_table.insert('', 'end', text=str(item[0]), values=(str(item[0]), str(item[1])))
+    for key, value in sym_table.items():
+        symbol_table.insert('', 'end', text=str(key), values=(str(key), str(value)))
 
 # Run lolcode program
 def exec_lolcode():
@@ -62,10 +65,10 @@ def exec_lolcode():
     parse_program(program)
 
     # Temporary testing code
-    populate_lex()
-    populate_sym()
+    pop_lex()
+    pop_sym()
 
-    sem.program(lexemes)
+    
 
 # Give input
 def submit():
