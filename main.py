@@ -29,6 +29,7 @@ def loadfile():
     editor.delete("1.0", "end")
     editor.insert(1.0, program)
 
+# Parse raw text into lexemes
 def parse_program(program):
     code_lines = program.split('\n')   # Splits the contents of the file by line
     source_code = remove_spaces(code_lines)
@@ -41,14 +42,14 @@ def parse_program(program):
     
 
 # Populate Lexeme Table
-def pop_lex():
+def populate_lex():
     lex_table.delete(*lex_table.get_children())
     for item in lexemes:    
         if item[0] == "\n": continue    # Skip line breaks
         lex_table.insert('', 'end', text=str(item[0]), values=(str(item[0]), str(item[1])))
 
 # Populate Symbol Table
-def pop_sym():
+def populate_sym():
     # Temporary testing code
     symbol_table.delete(*symbol_table.get_children())
     for item in lexemes:
@@ -61,8 +62,8 @@ def exec_lolcode():
     parse_program(program)
 
     # Temporary testing code
-    pop_lex()
-    pop_sym()
+    populate_lex()
+    populate_sym()
 
     sem.program(lexemes)
 
