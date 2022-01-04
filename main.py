@@ -1,4 +1,3 @@
-
 import syntax_analyzer as parser
 from tkinter import *
 from tkinter import filedialog, ttk
@@ -24,7 +23,6 @@ def loadfile():
 
     file = open(root.filename, 'r')
     program = file.read()
-    parse_program(program)
 
     editor.delete("1.0", "end")
     editor.insert(1.0, program)
@@ -35,9 +33,10 @@ def parse_program(program):
 
     # Syntax Analyzer
     parser.clear()
-    parser.parse(source_code)
+    parser.table_contents(source_code)
     global lexemes
     lexemes = parser.get_lexemes()
+    parser.program()
 
 # Populate Lexeme Table
 def pop_lex():
