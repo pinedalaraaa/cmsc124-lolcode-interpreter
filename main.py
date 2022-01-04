@@ -1,4 +1,5 @@
 import syntax_analyzer as parser
+import semantic_analyzer as sem
 from tkinter import *
 from tkinter import filedialog, ttk
 
@@ -13,6 +14,7 @@ def remove_spaces(program):
     for line in program:                            # Reads per line
         if (line.strip() != ''):
             scanned_program.append(line.strip())
+            scanned_program.append("\n")
     return scanned_program
 
 
@@ -36,12 +38,13 @@ def parse_program(program):
     parser.table_contents(source_code)
     global lexemes
     lexemes = parser.get_lexemes()
-    parser.program()
+    
 
 # Populate Lexeme Table
 def pop_lex():
     lex_table.delete(*lex_table.get_children())
-    for item in lexemes:
+    for item in lexemes:    
+        if item[0] == "\n": continue    # Skip line breaks
         lex_table.insert('', 'end', text=str(item[0]), values=(str(item[0]), str(item[1])))
 
 # Populate Symbol Table
@@ -49,6 +52,7 @@ def pop_sym():
     # Temporary testing code
     symbol_table.delete(*symbol_table.get_children())
     for item in lexemes:
+        if item[0] == "\n": continue    # Skip line breaks
         symbol_table.insert('', 'end', text=str(item[0]), values=(str(item[0]), str(item[1])))
 
 # Run lolcode program
@@ -59,6 +63,8 @@ def exec_lolcode():
     # Temporary testing code
     pop_lex()
     pop_sym()
+
+    sem.program(lexemes)
 
 # Give input
 def submit():
