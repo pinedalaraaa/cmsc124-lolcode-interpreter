@@ -16,7 +16,8 @@ def check_validity(para):
     token = para[0]
     prev = para[1]
     temp = para[2]
-    lexemes = para[3]
+    code_delim = para[3]
+    lexemes = para[4]
 
     if prev == my.STRING_DELIMITER:               # catches string literal
         if (token not in my.RE_delimiters):       # if the end of string has not been seen yet
@@ -27,7 +28,10 @@ def check_validity(para):
 
         else:
             lexemes.append([temp, "string_literal"])    # append to lexemes list
-            lexemes.append([token, "string_delimiter"])
+            if token == "``" or token == "''":
+                lexemes.append(["\"", "string_delimiter"])
+            else:
+                lexemes.append([token, "string_delimiter"])
             temp = ""                                   # reset temp
             prev = 0                                    # reset value of prev
 
@@ -52,10 +56,11 @@ def check_validity(para):
         lexemes.append([token, "version_number"])
 
     elif re.match(my.RE_hai_kw, token):
-        prev = my.VERSION
+        code_delim = my.CODE_DELIMITER
         lexemes.append([token, "code_delimiter"])
 
     elif re.match(my.RE_kthxbye_kw, token):
+        code_delim = 0
         lexemes.append([token, "code_delimiter"])
     
     elif re.match(my.RE_data_type, token):
@@ -160,6 +165,9 @@ def check_validity(para):
     else:   # delimiters
         if token in my.RE_delimiters:       # string delimiter
             prev = my.STRING_DELIMITER
-            lexemes.append([token, "string_delimiter"])
+            if token == "``" or token == "''":
+                lexemes.append(["\"", "string_delimiter"])
+            else:
+                lexemes.append([token, "string_delimiter"])
 
-    return [token, prev, temp, lexemes]
+    return [token, prev, temp, code_delim, lexemes]
