@@ -27,7 +27,7 @@ def literal(lexemes_list):
         lexemes_list.remove(lexemes_list[0])
 
     except:
-        print("Error! Invalid variable declaration")
+        print("Error! Invalid Variable Declaration")
 
 def loop():
     print("loop")
@@ -40,7 +40,6 @@ def declaration(lexemes_list):
     print("declaration")
     
     lexemes_list.remove(lexemes_list[0])    # Remove variable declaration keyword
-    print(lexemes_list)
     try:
         if lexemes_list[0][0] in variables:     # Variable has already been declared
             raise Exception
@@ -48,14 +47,29 @@ def declaration(lexemes_list):
             literal(lexemes_list)
 
     except Exception:
-        print("Error! Invalid variable declaration")
+        print("Error! Invalid Variable Declaration")
     
-def comment():
-    print(comment)
+def comment(lexemes_list):
+    print("comment")
+
 def input():
     print("input")
-def print_code():
+
+def print_code(lexemes_list):
     print("print")
+    lexemes_list.remove(lexemes_list[0])
+    try:
+        if lexemes_list[0][1] == "string_delimiter":    # Lexeme to be printed is a yarn literal
+            print(lexemes_list[1][0])
+            lexemes_list.remove(lexemes_list[2])
+            lexemes_list.remove(lexemes_list[1])
+        else:
+            print(variables[lexemes_list[0][0]])    # Lexeme to be printed is a variable
+        lexemes_list.remove(lexemes_list[0])
+        print(lexemes_list)
+    except:
+        print("Error! Invalid Statement")
+
 def assignment():
     print("assignment")
 
@@ -103,7 +117,7 @@ def expression(lexemes_list):
     arith = ["SUM OF","DIFF OF","PRODUKT OF","QUOSHUNT OF","MOD OF","BIGGR OF","SMALLR OF"]
     print("expression")
     
-    # while lexemes_list[n]:  # ipagpatuloy yung loop for nested operations hanggang sa makakita ng newline
+    # while lexemes_list[0][0]!="\n":  # ipagpatuloy yung loop for nested operations hanggang sa makakita ng newline
     #     for token in lexemes_list[0]:
     #         if token == "SUM OF": add()
     #         elif token == "DIFF OF": sub()
@@ -146,7 +160,7 @@ def program(lexemes):
     
     i=0
     while len(lexemes_list) > 0:                    # Iterates through the list of lexemes
-        if i==2:
+        if i==3:
             break
 
         if lexemes_list[0][0] != "KTHXBYE":         # Check which statement is given
@@ -155,9 +169,9 @@ def program(lexemes):
             elif lexemes_list[0][0] == "O RLY?": if_block()
             elif lexemes_list[0][0] == "WTF?": switch()
             elif lexemes_list[0][0] == "I HAS A": declaration(lexemes_list)
-            elif lexemes_list[0][0] == "BTW" or lexemes_list[0][0] == "OBTW": comment()
-            elif lexemes_list[0][0] == "GIMMEH": input()
-            elif lexemes_list[0][0] == "VISIBLE": print_code()
+            elif lexemes_list[0][0] == "BTW" or lexemes_list[0][0] == "OBTW": comment(lexemes_list)
+            elif lexemes_list[0][0] == "GIMMEH": input(lexemes_list)
+            elif lexemes_list[0][0] == "VISIBLE": print_code(lexemes_list)
             elif lexemes_list[0][0] == "R": assignment()
             else:           # It's probably an expression
                 expression(lexemes_list)
@@ -165,4 +179,4 @@ def program(lexemes):
             break
 
         i += 1
-        print(lexemes_list)
+        # print(lexemes_list)
