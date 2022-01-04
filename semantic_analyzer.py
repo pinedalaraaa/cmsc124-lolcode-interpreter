@@ -4,6 +4,9 @@ variables = {"IT":None}
 data_types = {"NUMBR":int, "NUMBAR":float, "YARN": str, "TROOF":bool, "NOOB":None}
 values = {"WIN":True, "FAIL":False}
 
+def get_variables():
+    return variables
+
 def literal(lexemes_list):
     try:
         print("literal")
@@ -50,7 +53,14 @@ def declaration(lexemes_list):
         print("Error! Invalid Variable Declaration")
     
 def comment(lexemes_list):
-    print("comment")
+    if lexemes_list[0][0] == "BTW":         # Single-line comment
+        lexemes_list.remove(lexemes_list[1])
+        lexemes_list.remove(lexemes_list[0])
+    else:                                   # Multi-line comment
+        lexemes_list.remove(lexemes_list[0])
+        while lexemes_list[0][1] != "multi-line comment keyword":
+            lexemes_list.remove(lexemes_list[0])
+        lexemes_list.remove(lexemes_list[0])
 
 def input():
     print("input")
@@ -148,8 +158,8 @@ def expression(lexemes_list):
     #             literal()
 
 
-def program(lexemes):
-    lexemes_list = lexemes      # Creating a copy of list of lexemes
+def program(lexemes_list):
+    # lexemes_list = lexemes      # Creating a copy of list of lexemes
     code_start = 0
     while code_start != 1:
         if lexemes_list[0][0] == "HAI":
@@ -160,7 +170,8 @@ def program(lexemes):
     
     i=0
     while len(lexemes_list) > 0:                    # Iterates through the list of lexemes
-        if i==3:
+        if i==10:
+            print(lexemes_list)
             break
 
         if lexemes_list[0][0] != "KTHXBYE":         # Check which statement is given
@@ -169,7 +180,7 @@ def program(lexemes):
             elif lexemes_list[0][0] == "O RLY?": if_block()
             elif lexemes_list[0][0] == "WTF?": switch()
             elif lexemes_list[0][0] == "I HAS A": declaration(lexemes_list)
-            elif lexemes_list[0][0] == "BTW" or lexemes_list[0][0] == "OBTW": comment(lexemes_list)
+            elif lexemes_list[0][0] in ("BTW", "OBTW"): comment(lexemes_list)
             elif lexemes_list[0][0] == "GIMMEH": input(lexemes_list)
             elif lexemes_list[0][0] == "VISIBLE": print_code(lexemes_list)
             elif lexemes_list[0][0] == "R": assignment()
@@ -177,6 +188,6 @@ def program(lexemes):
                 expression(lexemes_list)
         else:
             break
-
+        print(i)
         i += 1
         # print(lexemes_list)
