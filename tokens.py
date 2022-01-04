@@ -67,8 +67,9 @@ mwe = MWETokenizer([("I", "HAS", "A"), ("SUM", "OF"), ("DIFF", "OF"),
                     ("EITHER", "OF"), ("WON", "OF"), ("ANY", "OF"),
                     ("BOTH", "SAEM"), ("IS", "NOW", "A"), ("O", "RLY?"),
                     ("YA", "RLY"), ("NO", "WAI"), ("IM", "IN", "YR"),
-                    ("IM", "OUTTA", "YR"), ("HOW", "IZ", "I"), ("IF", "U", "SAY", "SO"), 
-                    ("FOUND", "YR"), ("I", "IZ")], separator = " ")
+                    ("IM", "OUTTA", "YR"), ("HOW", "IZ", "I"), ("ALL", "OF"),
+                    ("IF", "U", "SAY", "SO"), ("FOUND", "YR"), ("I", "IZ")],
+                    separator = " ")
 
 
 # Values to be passed to 'prev' variable in lexical_analyzer.py to indicate that these were encountered
@@ -76,3 +77,4 @@ VERSION = 1
 SINGLE_LINE_COMMENT = 2
 MULTI_LINE_COMMENT = 3
 STRING_DELIMITER = 4
+CODE_DELIMITER = 5
