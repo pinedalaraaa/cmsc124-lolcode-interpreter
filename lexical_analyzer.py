@@ -19,7 +19,7 @@ def check_validity(para):
     code_delim = para[3]
     lexemes = para[4]
 
-    if prev == my.STRING_DELIMITER:               # catches string literal
+    if prev == my.STRING_DELIMITER:               # catches yarn literal
         if (token not in my.RE_delimiters):       # if the end of string has not been seen yet
             if temp == "":
                 temp = temp + token               # concatenate strings
@@ -27,7 +27,7 @@ def check_validity(para):
                 temp = temp + " " + token
 
         else:
-            lexemes.append([temp, "string_literal"])    # append to lexemes list
+            lexemes.append([temp, "yarn_literal"])    # append to lexemes list
             if token == "``" or token == "''":
                 lexemes.append(["\"", "string_delimiter"])
             else:
