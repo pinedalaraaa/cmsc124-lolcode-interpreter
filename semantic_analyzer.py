@@ -7,6 +7,7 @@ values = {"WIN":True, "FAIL":False}
 def get_variables():
     return variables
 
+# Terminal Symbol
 def literal(lexemes_list):
     try:
         print("literal")
@@ -32,6 +33,9 @@ def literal(lexemes_list):
     except:
         print("Error! Invalid Variable Declaration")
 
+#===============================================================================================================================================================
+# STATEMENTS
+
 def loop():
     print("loop")
 def if_block():
@@ -54,34 +58,48 @@ def declaration(lexemes_list):
     
 def comment(lexemes_list):
     if lexemes_list[0][0] == "BTW":         # Single-line comment
-        lexemes_list.remove(lexemes_list[1])
-        lexemes_list.remove(lexemes_list[0])
+        lexemes_list.remove(lexemes_list[1])    # Remvoe the comment
+        lexemes_list.remove(lexemes_list[0])    # Remove comment keyword
     else:                                   # Multi-line comment
-        lexemes_list.remove(lexemes_list[0])
-        while lexemes_list[0][1] != "multi-line comment keyword":
+        lexemes_list.remove(lexemes_list[0])    # Remove starting comment keyword
+        while lexemes_list[0][1] != "multi-line comment keyword":   # Remove all comments
             lexemes_list.remove(lexemes_list[0])
-        lexemes_list.remove(lexemes_list[0])
+        lexemes_list.remove(lexemes_list[0])    # Remove end of comment keyword
 
 def input():
     print("input")
 
 def print_code(lexemes_list):
     print("print")
+    global variables
     lexemes_list.remove(lexemes_list[0])
     try:
         if lexemes_list[0][1] == "string_delimiter":    # Lexeme to be printed is a yarn literal
-            print(lexemes_list[1][0])
-            lexemes_list.remove(lexemes_list[2])
-            lexemes_list.remove(lexemes_list[1])
+            if lexemes_list[3] == "\n":                 # End of statement
+                print(lexemes_list[1][0])
+                variables["IT"] = lexemes_list[1][0]        # Store to implicit variable IT
+                lexemes_list.remove(lexemes_list[2])        # Remove end delimiter
+                lexemes_list.remove(lexemes_list[1])        # Remove yarn literal
+            else:                                       # There are more to be printed aside from the yarn literal
+                print("typecast to yarns then concatenate")
         else:
-            print(variables[lexemes_list[0][0]])    # Lexeme to be printed is a variable
-        lexemes_list.remove(lexemes_list[0])
-        print(lexemes_list)
+            if lexemes_list [1][0] == "\n":
+                print(variables[lexemes_list[0][0]])        # Lexeme to be printed is a variable
+            else:                                       # There are more to be printed aside from the yarn literal
+                print("typecast to yarns then concatenate")
+        lexemes_list.remove(lexemes_list[0])            # Remove the start delimiter or the variable
     except:
         print("Error! Invalid Statement")
 
-def assignment():
+def assignment(lexemes_list):
     print("assignment")
+    lexemes_list.remove(lexemes_list[1])            # Remove assignment statement keyword 
+    var_name = lexemes_list.remove(lexemes_list[0]) # Variable name
+
+       
+
+#===============================================================================================================================================================
+# EXPRESSIONS
 
 def add():
     print("add")
@@ -122,6 +140,7 @@ def infinite_and():
 def infinite_or():
     print("infinite_or")
 
+
 def expression(lexemes_list):
     # eto yung mga pwedeng nested operations
     arith = ["SUM OF","DIFF OF","PRODUKT OF","QUOSHUNT OF","MOD OF","BIGGR OF","SMALLR OF"]
@@ -159,7 +178,6 @@ def expression(lexemes_list):
 
 
 def program(lexemes_list):
-    # lexemes_list = lexemes      # Creating a copy of list of lexemes
     code_start = 0
     while code_start != 1:
         if lexemes_list[0][0] == "HAI":
@@ -183,11 +201,10 @@ def program(lexemes_list):
             elif lexemes_list[0][0] in ("BTW", "OBTW"): comment(lexemes_list)
             elif lexemes_list[0][0] == "GIMMEH": input(lexemes_list)
             elif lexemes_list[0][0] == "VISIBLE": print_code(lexemes_list)
-            elif lexemes_list[0][0] == "R": assignment()
-            else:           # It's probably an expression
+            elif lexemes_list[0][0] in variables.keys() and lexemes_list[1][0] == "R": assignment(lexemes_list)
+            else:                                   # It's probably an expression
                 expression(lexemes_list)
         else:
             break
-        print(i)
+
         i += 1
-        # print(lexemes_list)
