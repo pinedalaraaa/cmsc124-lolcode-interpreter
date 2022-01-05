@@ -30,7 +30,7 @@ def loadfile():
     editor.insert(1.0, program)
 
 def parse_program(program):
-    code_lines = program.split('\n')   # Splits the contents of the file by line
+    code_lines = program.split('\n')        # Splits the contents of the file by line
     source_code = remove_spaces(code_lines)
 
     # Syntax Analyzer
@@ -38,10 +38,13 @@ def parse_program(program):
     parser.table_contents(source_code)
     global lexemes
     lexemes = parser.get_lexemes()
+    errors = parser.get_error()
 
     # Semantic Analyzer
-    lexemes_list = lexemes.copy()       # Creating copy of lexemes
-    sem.program(lexemes_list)
+    if errors == 0: 
+        lexemes_list = lexemes.copy()       # Create a copy of lexemes
+        # sem.program(lexemes_list)
+        
     global sym_table
     sym_table = sem.get_variables()
 
