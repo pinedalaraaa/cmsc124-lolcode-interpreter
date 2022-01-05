@@ -26,8 +26,8 @@ def table_contents(source):
                 else:
                     print("Error: Expected statement or expression at:", lexeme)
 
-            if code_delim != lexer.my.CODE_DELIMITER:       # If code delimiter has not been encountered yet, all other statements
-                if lexeme not in ["BTW", "OBTW", "TLDR"]:   # except for comments will result to an error
+            if code_delim != lexer.my.CODE_DELIMITER or code_delim == 0:    # If code delimiter has not been encountered yet, all other statements
+                if lexeme not in ["BTW", "OBTW", "TLDR"]:                   # except for comments will result to an error
                     error = 1
                     print("Error: Statement or expression not inside the program's main function")
                     break
