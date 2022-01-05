@@ -6,7 +6,7 @@ lexeme_table = []
 def table_contents(source):
     prev = ""
     temp, code_delim = "", ""
-    hai, error = 0, 0
+    error = 0
 
     for line in source:                     # Iterate through the source code by line
         if line[0] == "\n":                 # Add line break to signify that next element is a new line
@@ -17,15 +17,21 @@ def table_contents(source):
         for position, lexeme in enumerate(tokens):      # Checking the lexemes one by one
 
             if lexer.re.match(lexer.my.RE_hai_kw, lexeme):         # If this line contains HAI
-                if code_delim == "":                                 # If program has not encountered HAI before
+                if code_delim == "":                               # If this is the first HAI enocuntered in the program
                     if len(tokens) == 2:                                # Check if line includes a version number
                         lexeme_table.append([tokens[0], "code_delimiter"])
                         code_delim = lexer.my.CODE_DELIMITER
                         prev = lexer.my.VERSION
-                        continue
+                        continue                        # Proceed to version number token
                 else:
-                    print("Error: Expected statement or expression at: HAI")
-            
+                    print("Error: Expected statement or expression at:", lexeme)
+
+            if code_delim != lexer.my.CODE_DELIMITER:       # If code delimiter has not been encountered yet, all other statements
+                if lexeme not in ["BTW", "OBTW", "TLDR"]:   # except for comments will result to an error
+                    error = 1
+                    print("Error: Statement or expression not inside the program's main function")
+                    break
+
             para = [lexeme, prev, temp, code_delim, lexeme_table]    # Parameters to be passed to lexical analyzer
             if (error == 0):
                 para = lexer.check_validity(para)       # Check the validity of current lexeme
@@ -77,7 +83,6 @@ def table_contents(source):
                     print("Error!")
 
         if error == 1: break
-
 
 # Returns list of lexemes
 def get_lexemes():
