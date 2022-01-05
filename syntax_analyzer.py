@@ -6,7 +6,7 @@ lexeme_table = []
 def table_contents(source):
     prev = ""
     temp, code_delim = "", ""
-    first, error = 0, 0
+    hai, error = 0, 0
 
     for line in source:                     # Iterate through the source code by line
         if line[0] == "\n":                 # Add line break to signify that next element is a new line
@@ -15,15 +15,18 @@ def table_contents(source):
         tokens = lexer.tokenize_line(line)  # Split line into tokens
 
         for position, lexeme in enumerate(tokens):      # Checking the lexemes one by one
-            para = [lexeme, prev, temp, code_delim, lexeme_table]    # Parameters to be passed
 
-            if first == 0:                              # For the first line in file
-                if len(tokens) == 2:                    # File includes a version number
-                    code_delim = lexer.my.CODE_DELIMITER
-                    lexeme_table.append([tokens[0], "code_delimiter"])
-                    prev = lexer.my.VERSION
-                first = 1
+            if lexer.re.match(lexer.my.RE_hai_kw, lexeme):         # If this line contains HAI
+                if code_delim == "":                                 # If program has not encountered HAI before
+                    if len(tokens) == 2:                                # Check if line includes a version number
+                        lexeme_table.append([tokens[0], "code_delimiter"])
+                        code_delim = lexer.my.CODE_DELIMITER
+                        prev = lexer.my.VERSION
+                        continue
+                else:
+                    print("Error: Expected statement or expression at: HAI")
             
+            para = [lexeme, prev, temp, code_delim, lexeme_table]    # Parameters to be passed to lexical analyzer
             if (error == 0):
                 para = lexer.check_validity(para)       # Check the validity of current lexeme
                 prev = para[1]                          # Overwriting the variables with the returned value in the list
