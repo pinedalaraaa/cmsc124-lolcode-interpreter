@@ -68,19 +68,21 @@ def exec_lolcode():
     pop_lex()
     pop_sym()
 
-    
+# Print to GUI console 
+def console_print(text):
+    console.configure(state=NORMAL)
+    console.insert('end', text)
+    console.configure(state=DISABLED)
+    console.see('end')
 
 # Give input
 def submit():
     # Temporary testing code
     response = console_in.get(1.0, 'end')
     console_in.delete(1.0, 'end')
-    console.configure(state=NORMAL)
-    console.insert('end', response)
-    console.configure(state=DISABLED)
-    console.see('end')
+    console_print(response)
 
-### GUI ###
+    ### GUI ###
 
 # File Button
 file_button = Button(root, text="Load File", command=loadfile)
