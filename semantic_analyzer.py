@@ -1,3 +1,4 @@
+import time
 import sys
 import re
 import tokens as my
@@ -103,9 +104,13 @@ def comment(lexemes_list):
         lexemes_list.remove(lexemes_list[0])
 
 def userinput(lexemes_list):
+    global output, wait_for_input, given_input
     lexemes_list.remove(lexemes_list[0])
-    print("Enter: ")
-    variables[lexemes_list[0][0]] = input()
+    output = "Enter: "
+    wait_for_input = True
+    while wait_for_input:
+        time.sleep(0.1)
+    variables[lexemes_list[0][0]] = given_input
     print("input")
 
 def print_code(lexemes_list):

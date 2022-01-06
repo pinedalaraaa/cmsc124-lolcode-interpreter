@@ -111,6 +111,7 @@ def table_contents(source):
             while not submit_now:
                 time.sleep(0.1)
             sem.given_input = response
+            sem.wait_for_input = False
     
     # If end of code has been processed but code delimiter is either not found or not in pair
     if code_delim == lexer.my.CODE_DELIMITER:
