@@ -159,6 +159,7 @@ def pop_sym():
 
 # Run lolcode program
 def exec_lolcode():
+    console_clear()
     program = editor.get(1.0, 'end')
     parse_program(program)
 
@@ -169,9 +170,16 @@ def exec_lolcode():
 # Print to GUI console 
 def console_print(text):
     console.configure(state=NORMAL)
-    console.insert('end', text)
+    console.insert('end', text + '\n')
     console.configure(state=DISABLED)
     console.see('end')
+
+# Clear console
+def console_clear():
+    console.configure(state=NORMAL)
+    console.delete(1.0, 'end')
+    console.configure(state=DISABLED)
+
 
 # Give input
 def submit():
