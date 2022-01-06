@@ -34,19 +34,22 @@ def parse_program(program):
     source_code = remove_spaces(code_lines)
 
     # Syntax Analyzer
-    parser.clear()
-    parser.table_contents(source_code)
-    global lexemes
-    lexemes = parser.get_lexemes()
-    errors = parser.get_error()
+    for line in source_code:                # Main code execution loop
+        parser.clear()
+        parser.table_contents(line)
+        global lexemes
+        lexemes = parser.get_lexemes()
+        errors = parser.get_error()
 
-    # Semantic Analyzer
-    if errors == 0: 
-        lexemes_list = lexemes.copy()       # Create a copy of lexemes
-        # sem.program(lexemes_list)
-        
-    global sym_table
-    sym_table = sem.get_variables()
+        # Semantic Analyzer
+        if errors == 0: 
+            lexemes_list = lexemes.copy()       # Create a copy of lexemes
+            # sem.program(lexemes_list)
+            
+        global sym_table
+        sym_table = sem.get_variables()
+        pop_lex()
+        pop_sym()
 
 # Populate Lexeme Table
 def pop_lex():
@@ -66,10 +69,6 @@ def pop_sym():
 def exec_lolcode():
     program = editor.get(1.0, 'end')
     parse_program(program)
-
-    # Temporary testing code
-    pop_lex()
-    pop_sym()
 
 # Print to GUI console 
 def console_print(text):
