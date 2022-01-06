@@ -6,7 +6,11 @@ variables = {"IT":None}
 data_types = {"NUMBR":int, "NUMBAR":float, "YARN": str, "TROOF":bool, "NOOB":None}
 values = {"WIN":True, "FAIL":False}
 types = ["numbr_literal","numbar_literal", "troof_literal", "yarn_literal"]
-expressions = ["SUM OF","DIFF OF","PRODUKT OF","QUOSHUNT OF","MOD OF","BIGGR OF","SMALLR OF"]
+expressions = ["SUM OF","DIFF OF","PRODUKT OF","QUOSHUNT OF","MOD OF","BIGGR OF","SMALLR OF", 
+               "BOTH OF", "EITHER OF", "WON OF", "NOT", "ALL OF", "ANY OF", "BOTH SAEM", "DIFFRINT",
+               "SMOOSH", "MAEK"]
+arith = ["SUM OF","DIFF OF","PRODUKT OF","QUOSHUNT OF","MOD OF","BIGGR OF","SMALLR OF"]
+boolean = ["BOTH OF", "EITHER OF", "WON OF", "NOT", "ALL OF", "ANY OF", "BOTH SAEM", "DIFFRINT"]
 
 def get_variables():
     return variables
@@ -95,17 +99,37 @@ def userinput(lexemes_list):
 
 def print_code(lexemes_list):
     print("print")
-    lexemes_list.remove(lexemes_list[0])
-    try:
-        if lexemes_list[0][1] == "string_delimiter":    # Lexeme to be printed is a yarn literal
-            print(lexemes_list[1][0])
+    string = ""     #string to be printed
+    while lexemes_list[1][1] != "line_break": #print all expression after VISIBLE keyword
+        
+        if lexemes_list[1][1] == "string_delimiter":    #if it is a string concatenate it to string
+            temp = lexemes_list[2][0] + " "
+            lexemes_list.remove(lexemes_list[3])
             lexemes_list.remove(lexemes_list[2])
-            lexemes_list.remove(lexemes_list[1])
+
+        elif lexemes_list[1][1] in types:   #if it is a literal except string typecast it to YARN 
+            temp = lexemes_list[1][0]       #and concatenate it to string to be printed
+            temp = str(temp) + " " 
+
+        elif lexemes_list[1][0] in variables:   #if it is a variable get the value of the variable
+            temp = variables[lexemes_list[1][0]]    #typecast it to YARN
+            temp = str(temp) + " "                  #and concatenate it to string to be printed
+
+        elif lexemes_list[1][0] in expressions:     #if it is an expression evaluate it first
+            templist = lexemes_list        
+            templist.remove(templist[0])    #get the value
+            temp = expression(templist)     #implicit typecast to yarn and concatenate it to string    
+            temp = str(temp) + " "
         else:
-            print(variables[lexemes_list[0][0]])    # Lexeme to be printed is a variable
-        lexemes_list.remove(lexemes_list[0])
-    except:
-        print("Error! Invalid Statement")
+            break
+        
+        string = string + temp #concatenation happens here
+        lexemes_list.remove(lexemes_list[1])  #then update the lexeme_list to be evaluated
+            
+        
+        
+
+    print(string)            
 
 def function(lexemes_list):
     print("function")
@@ -114,7 +138,9 @@ def assignment(lexemes_list):
     print("assignment")
     if lexemes_list[2][1] in types: #value that will be assigned is a literal 
         variables[lexemes_list[0][0]] = lexemes_list[2][0]
-        print(variables) 
+        print(variables)
+        lexemes_list.remove(lexemes_list[2])
+        lexemes_list.remove(lexemes_list[1])
 
     elif lexemes_list[2][0] in variables:   #value will come from a variable
         print("in variables")
@@ -126,16 +152,19 @@ def assignment(lexemes_list):
                 
         variables[lexemes_list[0][0]] == variables[lexemes_list[2][0]]
         print(variables) 
+        lexemes_list.remove(lexemes_list[2])
+        lexemes_list.remove(lexemes_list[1])
 
     else:
-        temp = lexemes_list
-        temp.remove(temp[0])
-        temp.remove(temp[1])
-        expression(temp)
-        variables[lexemes_list[0][0]] = variables["IT"]
+        print(lexemes_list[2][0])
+        temp = lexemes_list[0][0]
+        lexemes_list.remove(lexemes_list[1])
+        lexemes_list.remove(lexemes_list[0])
+        variables["IT"] = expression(lexemes_list)
+        variables[temp] = variables["IT"]
+        print(variables)
         
-    lexemes_list.remove(lexemes_list[2])
-    lexemes_list.remove(lexemes_list[1]) 
+
  
 #===============================================================================================================================================================
 # EXPRESSIONS    
@@ -150,19 +179,57 @@ def sub(op1, op2):
     print("sub")
     print("OP1: "+str(op1)+" : "+str(type(op1)))
     print("OP2: "+str(op2)+" : "+str(type(op2)))
-    itdiff = op1 + op2
+    itdiff = op1 - op2
     return itdiff 
 
-def mul():
+def mul(op1, op2):
     print("mul")
-def div():
-    print("div")
-def mod():
+    print("OP1: "+str(op1)+" : "+str(type(op1)))
+    print("OP2: "+str(op2)+" : "+str(type(op2)))
+    itprod = op1 * op2
+    return itprod
+ 
+def floatdiv(op1, op2):
+    print("float div")
+    print("OP1: "+str(op1)+" : "+str(type(op1)))
+    print("OP2: "+str(op2)+" : "+str(type(op2)))
+    itquo = op1 / op2
+    return itquo 
+
+def floordiv(op1, op2):
+    print("floor div")
+    print("OP1: "+str(op1)+" : "+str(type(op1)))
+    print("OP2: "+str(op2)+" : "+str(type(op2)))
+    itquo = op1 // op2
+    return itquo
+
+    
+def mod(op1, op2):
     print("mod")
-def max_expr():
+    print("OP1: "+str(op1)+" : "+str(type(op1)))
+    print("OP2: "+str(op2)+" : "+str(type(op2)))
+    itmod = op1 % op2
+    return itmod 
+    
+def max_expr(op1, op2):
     print("max")
-def min_expr():
+    print("OP1: "+str(op1)+" : "+str(type(op1)))
+    print("OP2: "+str(op2)+" : "+str(type(op2)))
+    if op1 > op2:
+        return op1
+    else:
+        return op2
+    
+def min_expr(op1,op2):
     print("min")
+    print("OP1: "+str(op1)+" : "+str(type(op1)))
+    print("OP2: "+str(op2)+" : "+str(type(op2)))
+    if op1 < op2:
+        return op1
+    else:
+        return op2
+    
+    
 def equal():
     print("equal")
 def not_equal():
@@ -188,8 +255,9 @@ def infinite_and():
 def infinite_or():
     print("infinite_or")
 
-def expression(lexemes_list): 
-    if lexemes_list[0][0] == "SUM OF":
+def expression(lexemes_list):
+    expr = lexemes_list[0][0]   
+    if expr in arith:
         op1 = 0
         op2 = 0
         if lexemes_list[1][1] in types: 
@@ -659,10 +727,29 @@ def expression(lexemes_list):
         else:
             print("Error! Invalid operand")
             
+        #evaluate op1 and op2 base on arithmetic operator used and store the answer to IT variable    
+        if expr == "SUM OF":        
+            variables["IT"] = add(op1, op2)
+            
+        elif expr == "DIFF OF":
+            variables["IT"] = sub(op1, op2)
+        elif expr == "PRODUKT OF":
+            variables["IT"] = mul(op1, op2)
+        elif expr == "QUOSHUNT OF":
+            if re.match(my.RE_literal_numbar, str(op1)) or re.match(my.RE_literal_numbar, str(op2)):
+                variables["IT"] = floatdiv(op1, op2)
+            else:
+                variables["IT"] = floordiv(op1, op2)
+        elif expr == "MOD OF":
+            variables["IT"] = mod(op1, op2)
+        elif expr == "BIGGR OF":
+            variables["IT"] = max_expr(op1, op2)
+        elif expr == "SMALLR OF":
+            variables["IT"] = min_expr(op1, op2)
         
-        variables["IT"] = add(op1, op2)
         print(variables["IT"])
-        return variables["IT"]
+        return variables["IT"]    
+            
         
 
             
@@ -732,7 +819,7 @@ def program(lexemes_list):
                     assignment(lexemes_list)
                 else:
                     expression(lexemes_list)
-                lexemes_list.remove(lexemes_list[0])            
+                lexemes_list.remove(lexemes_list[0])
 
    
         else:
