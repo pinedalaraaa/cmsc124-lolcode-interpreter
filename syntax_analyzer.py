@@ -5,10 +5,14 @@ error_message = ""
 
 # For the lexeme table
 def table_contents(source):
-    prev = ""
-    temp, code_delim = "", ""
     global error, error_message
     error = 0
+    prev = ""
+    temp = ""
+    code_delim = ""
+    if_block = ""
+    switch_block = ""
+    loop_block = ""
 
     for line in source:                     # Iterate through the source code by line
         if line[0] == "\n":                 # Add line break to signify that next element is a new line
@@ -18,6 +22,29 @@ def table_contents(source):
 
         for position, lexeme in enumerate(tokens):      # Checking the lexemes one by one
 
+            if lexer.re.match(lexer.my.RE_orly_kw, lexeme):     # Checking if the lexeme is one that has a pair
+                if_block = 1
+            elif lexer.re.match(lexer.my.RE_wtf_kw, lexeme):
+                switch_block = 1
+            elif lexer.re.match(lexer.my.RE_oic_kw, lexeme):
+                if if_block == "" and switch_block == "":
+                    if lexer.flag == lexer.my.IF_STATEMENT:
+                        if_block = -1
+                    elif lexer.flag == lexer.my.OMG_STATEMENT:
+                        switch_block = -1
+                else:
+                    if if_block == 1:
+                        if_block = 0
+                    elif switch_block == 1:
+                        switch_block = 0                        
+            elif lexer.re.match(lexer.my.RE_iminyr_kw, lexeme):
+                loop_block = 1                
+            elif lexer.re.match(lexer.my.RE_imouttayr_kw, lexeme):
+                if loop_block == "":
+                    loop_block = -1
+                else:
+                    loop_block = 0
+            
             if lexer.re.match(lexer.my.RE_hai_kw, lexeme):         # If this line contains HAI
                 if code_delim == "":                               # If this is the first HAI enocuntered in the program
                     if len(tokens) == 2:                                # Check if line includes a version number
@@ -33,7 +60,7 @@ def table_contents(source):
                     error = 1
                     error_message = "Syntax Error: Statement or expression not inside the program's main function"
                     break
-
+            
             para = [lexeme, prev, temp, code_delim, lexeme_table]   # Parameters to be passed to lexical analyzer
             if (error == 0):
                 para = lexer.check_validity(para)       # Check the validity of current lexeme
@@ -86,11 +113,26 @@ def table_contents(source):
 
         if error == 1: break
     
-    # If end of code has been processed but code delimiter is either not found or not in pair
+    # End of code has been processed 
+    # If code delimiter is either not found or not in pair
     if code_delim == lexer.my.CODE_DELIMITER:
         error_message = "Syntax Error: Expected token: KTHXBYE"
     elif code_delim == "":
         error_message = "Syntax Error: Expected token: HAI"
+
+    # Errors for lexemes that should come in pairs but were not found in pairs
+    if if_block == 1 or switch_block == 1:
+        error_message = "Syntax Error: Expected token: OIC"
+    elif if_block == -1:
+        error_message = "Syntax Error: Expected token: O RLY?"
+    elif switch_block == -1:
+        error_message = "Syntax Error: Expected token: WTF?"
+    
+    if loop_block == 1:
+        error_message = "Syntax Error: Expected token: IM OUTTA YR"
+    elif loop_block == -1:
+        error_message = "Syntax Error: Expected token: IM IN YR"
+    
 
 
 # Returns list of lexemes
