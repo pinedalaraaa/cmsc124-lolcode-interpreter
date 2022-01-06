@@ -10,6 +10,13 @@ HAI 1.2
 		and another one
 	TLDR
 	
+	O RLY?
+		YA RLY
+			VISIBLE a 
+		NO WAI
+			VISIBLE b
+	OIC
+	
 	HOW IZ I summation YR X AN YR Y
     	thissum R SUM OF X AN Y
 	IF U SAY SO
@@ -17,10 +24,4 @@ HAI 1.2
 	BTW add 2 and 3
 	I IZ summation YR 2 YR 3 MKAY
 
-	O RLY?
-		YA RLY
-			VISIBLE a 
-		NO WAI
-			VISIBLE b
-	OIC
 KTHXBYE
