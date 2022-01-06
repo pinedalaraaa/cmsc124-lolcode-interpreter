@@ -78,3 +78,10 @@ SINGLE_LINE_COMMENT = 2
 MULTI_LINE_COMMENT = 3
 STRING_DELIMITER = 4
 CODE_DELIMITER = 5
+
+# Values to be passed to 'flag' variable in lexical_analyzer.py
+IF_ELSE_BLOCK = 6
+SWITCH_BLOCK = 7
+LOOP_BLOCK = 8
+IF_STATEMENT = 9
+OMG_STATEMENT = 10
