@@ -18,6 +18,9 @@ wait_for_input = False
 output = ""
 given_input = ""
 
+# Flags
+multiline_comment = 0
+
 def reset():
     global wait_for_input, output
     wait_for_input = False
@@ -93,14 +96,19 @@ def declaration(lexemes_list):
         output = "Error! Invalid Variable Declaration"
     
 def comment(lexemes_list):
-    if lexemes_list[0][0] == "BTW":         # Single-line comment
-        lexemes_list.remove(lexemes_list[1])
-        lexemes_list.remove(lexemes_list[0])
-    else:                                   # Multi-line comment
-        lexemes_list.remove(lexemes_list[0])
-        while lexemes_list[0][1] != "multi-line comment keyword":
+    global multiline_comment
+    if multiline_comment == 0:
+        if lexemes_list[0][0] == "BTW":         # We have a single-line comment
+            lexemes_list.remove(lexemes_list[1])
+        else:                                   # We have a multi-line comment
+            multiline_comment = 1               # Set flag to 1
+            if len(lexemes_list) == 2:
+                lexemes_list.remove(lexemes_list[1])
+    else:
+        if lexemes_list == "TLDR":
+            multiline_comment = 0               # Reset flag
+        else:                                   # Remove multi-line comments
             lexemes_list.remove(lexemes_list[0])
-        lexemes_list.remove(lexemes_list[0])
 
 def userinput(lexemes_list):
     global output, wait_for_input, given_input
@@ -139,9 +147,6 @@ def print_code(lexemes_list):
         
         string = string + temp #concatenation happens here
         lexemes_list.remove(lexemes_list[1])  #then update the lexeme_list to be evaluated
-            
-        
-        
 
     output = string
     print(string)            
@@ -813,33 +818,37 @@ def program(lexemes_list):
 
     
     for lexeme in lexemes_list:
-        if lexeme[0] != "KTHXBYE":
-            if lexeme[0] == "\n": #line breaks                
-                lexemes_list.remove(lexeme)
-            else:    #statements
-                if lexeme[0] == "IM IN YR":
-                    loop(lexemes_list)
-                elif lexeme[0] == "O RLY?":
-                    if_block(lexeme[0])
-                elif lexeme[0] == "WTF?":
-                    switch(lexemes_list)
-                elif lexeme[0] == "HOW IZ I":
-                    function(lexemes_list)
-                elif lexeme[0] == "I HAS A":
-                    declaration(lexemes_list)
-                elif lexeme[0] == "BTW" or lexeme[0] == "OBTW":
-                    comment(lexemes_list)
-                elif lexeme[0] == "GIMMEH":
-                    userinput(lexemes_list)
-                elif lexeme[0] == "VISIBLE":
-                    print_code(lexemes_list)
-                elif lexeme[1] == "identifier" and lexemes_list[1][0] == "R":
-                    assignment(lexemes_list)
-                else:
-                    expression(lexemes_list)
-                lexemes_list.pop(0)
+        # Check flags first
+        if multiline_comment == 1:
+            comment(lexemes_list)
 
-   
         else:
-            print("end of program")
-            break
+            if lexeme[0] != "KTHXBYE":
+                if lexeme[0] == "\n": #line breaks                
+                    lexemes_list.remove(lexeme)
+                else:    #statements
+                    if lexeme[0] == "IM IN YR":
+                        loop(lexemes_list)
+                    elif lexeme[0] == "O RLY?":
+                        if_block(lexeme[0])
+                    elif lexeme[0] == "WTF?":
+                        switch(lexemes_list)
+                    elif lexeme[0] == "HOW IZ I":
+                        function(lexemes_list)
+                    elif lexeme[0] == "I HAS A":
+                        declaration(lexemes_list)
+                    elif lexeme[0] == "BTW" or lexeme[0] == "OBTW":
+                        comment(lexemes_list)
+                    elif lexeme[0] == "GIMMEH":
+                        userinput(lexemes_list)
+                    elif lexeme[0] == "VISIBLE":
+                        print_code(lexemes_list)
+                    elif lexeme[1] == "identifier" and lexemes_list[1][0] == "R":
+                        assignment(lexemes_list)
+                    else:
+                        expression(lexemes_list)
+
+                    lexemes_list.pop(0)
+            else:
+                print("end of program")
+                break
