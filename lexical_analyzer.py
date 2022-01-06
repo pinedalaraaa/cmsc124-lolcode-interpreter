@@ -4,6 +4,7 @@ import tokens as my
 # nltk.download('punkt')
 from nltk.tokenize import sent_tokenize, word_tokenize
 
+flag = ""
 
 # Tokenizes the line
 def tokenize_line(line):
@@ -13,6 +14,7 @@ def tokenize_line(line):
 
 # Checks if given lexeme is valid
 def check_validity(para):
+    global flag
     token = para[0]
     prev = para[1]
     temp = para[2]
@@ -42,12 +44,13 @@ def check_validity(para):
     elif re.match(my.RE_obtw_kw, token):
         prev = my.MULTI_LINE_COMMENT
         lexemes.append([token, "multi-line comment keyword"])
-        # set pairing to tldr
     
     elif re.match(my.RE_tldr_kw, token):
-        prev = 0                                    # reset value of prev
+        if prev == my.MULTI_LINE_COMMENT:
+            prev = 0
+        else:
+            prev = my.MULTI_LINE_COMMENT
         lexemes.append([token, "multi-line comment keyword"])
-        # set pairing to obtw
 
     elif prev == my.MULTI_LINE_COMMENT: return para
 
@@ -106,31 +109,46 @@ def check_validity(para):
         lexemes.append([token, "input_keyword"])
 
     elif re.match(my.RE_orly_kw, token):
+        flag = my.IF_ELSE_BLOCK
         lexemes.append([token, "if_then_delimiter"])
-        # set to pair with oic
     
     elif re.match(my.RE_yarly_kw, token):
+        flag = my.IF_STATEMENT
         lexemes.append([token, "if_keyword"])
     
     elif re.match(my.RE_nowai_kw, token):
         lexemes.append([token, "else_keyword"])
     
     elif re.match(my.RE_oic_kw, token):
-        lexemes.append([token, "if_then_delimiter"])
-        # set to pair with o rly?
+        if flag == my.IF_ELSE_BLOCK:
+            flag = 0
+            lexemes.append([token, "if_then_delimiter"])
+        elif flag == my.SWITCH_BLOCK:
+            flag = 0
+            lexemes.append([token, "switch_case_delimiter"])
+        else:                           # flag is set to 0 or ""
+            if flag == my.IF_STATEMENT:
+                lexemes.append([token, "if_then_delimiter"])
+            elif flag == my.OMG_STATEMENT:
+                lexemes.append([token, "switch_case_delimiter"])
     
     elif re.match(my.RE_wtf_kw, token):
+        flag = my.SWITCH_BLOCK
         lexemes.append([token, "switch_case_delimiter"])
     
     elif re.match(my.RE_omg_kw, token):
+        flag = my.OMG_STATEMENT
         lexemes.append([token, "case_keyword"])
     
     elif re.match(my.RE_omgwtf_kw, token):
         lexemes.append([token, "default_case_keyword"])
 
-    elif re.match(my.RE_iminyr_kw, token) or re.match(my.RE_imouttayr_kw, token):
+    elif re.match(my.RE_iminyr_kw, token):
         lexemes.append([token, "loop_delimiter"])
-        # set to pair with each other
+    
+    elif re.match(my.RE_imouttayr_kw, token):
+        prev = 0
+        lexemes.append([token, "loop_delimiter"])
 
     elif re.match(my.RE_yr_kw, token):
         lexemes.append([token, "variable_identifier"])
