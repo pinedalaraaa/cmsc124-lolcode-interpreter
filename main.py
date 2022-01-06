@@ -205,11 +205,11 @@ def console_clear():
 # Give input
 def submit():
     global submit_now, response
-    submit_now = True
     response = console_in.get(1.0, 'end').strip()
+    submit_now = True
     console_in.delete(1.0, 'end')
 
-    ### GUI ###
+### GUI ###
 
 # File Button
 file_button = Button(root, text="Load File", command=loadfile)
