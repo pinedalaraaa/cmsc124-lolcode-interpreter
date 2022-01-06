@@ -19,10 +19,9 @@ output = ""
 given_input = ""
 
 def reset():
-    global wait_for_input, output, given_input
+    global wait_for_input, output
     wait_for_input = False
     output = ""
-    given_input = ""
 
 def get_variables():
     return variables
@@ -105,19 +104,17 @@ def comment(lexemes_list):
 
 def userinput(lexemes_list):
     global output, wait_for_input, given_input
+    given_input = ""
     lexemes_list.remove(lexemes_list[0])
     output = "Enter: "
     wait_for_input = True
-    while wait_for_input:
-        time.sleep(0.1)
-    variables[lexemes_list[0][0]] = given_input
     print("input")
 
 def print_code(lexemes_list):
     global output
     print("print")
     string = ""     #string to be printed
-    while lexemes_list[1][1] != "line_break": #print all expression after VISIBLE keyword
+    for lexeme in lexemes_list: #print all expression after VISIBLE keyword
         
         if lexemes_list[1][1] == "string_delimiter":    #if it is a string concatenate it to string
             temp = lexemes_list[2][0] + " "
@@ -801,43 +798,45 @@ def expression(lexemes_list):
     
 
 #main semantic_analyzer
+code_start = 0
 def program(lexemes_list):
-    code_start = 0
-    while code_start != 1:
+    global code_start, given_input
+    if code_start != 1:
         if lexemes_list[0][0] == "HAI":
             code_start = 1
-            lexemes_list.remove(lexemes_list[0])
-            lexemes_list.remove(lexemes_list[0])
-            if lexemes_list[1][1] == "version_number":
-                lexemes_list.remove(lexemes_list[1])
-        lexemes_list.remove(lexemes_list[0])        
+            return
     
-    while (1):
-        if lexemes_list[0][0] != "KTHXBYE":
-            if lexemes_list[0][0] == "\n": #line breaks                
-                lexemes_list.remove(lexemes_list[0])
+    if given_input !="":
+        variables[lexemes_list[0][0]] = given_input
+        given_input = ""
+
+    
+    for lexeme in lexemes_list:
+        if lexeme[0] != "KTHXBYE":
+            if lexeme[0] == "\n": #line breaks                
+                lexemes_list.remove(lexeme)
             else:    #statements
-                if lexemes_list[0][0] == "IM IN YR":
+                if lexeme[0] == "IM IN YR":
                     loop(lexemes_list)
-                elif lexemes_list[0][0] == "O RYL?":
-                    if_block(lexemes_list[0][0])
-                elif lexemes_list[0][0] == "WTF?":
+                elif lexeme[0] == "O RYL?":
+                    if_block(lexeme[0])
+                elif lexeme[0] == "WTF?":
                     switch(lexemes_list)
-                elif lexemes_list[0][0] == "HOW IZ I":
+                elif lexeme[0] == "HOW IZ I":
                     function(lexemes_list)
-                elif lexemes_list[0][0] == "I HAS A":
+                elif lexeme[0] == "I HAS A":
                     declaration(lexemes_list)
-                elif lexemes_list[0][0] == "BTW" or lexemes_list[0][0] == "OBTW":
+                elif lexeme[0] == "BTW" or lexeme[0] == "OBTW":
                     comment(lexemes_list)
-                elif lexemes_list[0][0] == "GIMMEH":
+                elif lexeme[0] == "GIMMEH":
                     userinput(lexemes_list)
-                elif lexemes_list[0][0] == "VISIBLE":
+                elif lexeme[0] == "VISIBLE":
                     print_code(lexemes_list)
-                elif lexemes_list[0][1] == "identifier" and lexemes_list[1][0] == "R":
+                elif lexeme[1] == "identifier" and lexemes_list[1][0] == "R":
                     assignment(lexemes_list)
                 else:
                     expression(lexemes_list)
-                lexemes_list.remove(lexemes_list[0])
+                lexemes_list.pop(0)
 
    
         else:

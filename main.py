@@ -12,6 +12,8 @@ response = ""
 root = Tk()
 root.title = ('Main Window')
 
+submit_flag = IntVar()
+
 # Function that puts each line into a list
 def remove_spaces(program):
     scanned_program = []
@@ -97,7 +99,7 @@ def exec_lolcode():
         submit_now = False
         response = ""
 
-        sem.program(lexeme_lines, line_index)               # Run lolcode
+        sem.program(line)               # Run lolcode
         pop_sym(sem.get_variables())    # Put variable data in symbol table
 
         # Print to console when lolcode says to
@@ -107,8 +109,7 @@ def exec_lolcode():
         # Get input from GUI
         if sem.wait_for_input:
             # Wait until response is given
-            while not submit_now:
-                time.sleep(0.1)
+            console_in_label.wait_variable(submit_flag)
             sem.given_input = response
             sem.wait_for_input = False
         
@@ -130,7 +131,8 @@ def console_clear():
 
 # Give input
 def submit():
-    global submit_now, response
+    global submit_now, response, submit_flag
+    submit_flag.set(1)
     response = console_in.get(1.0, 'end').strip()
     submit_now = True
     console_in.delete(1.0, 'end')
