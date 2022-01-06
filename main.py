@@ -2,125 +2,9 @@ import time
 import semantic_analyzer as sem
 from tkinter import *
 from tkinter import filedialog, ttk
+import syntax_analyzer_old as parser
 
 from tokens import RE_wonof_kw
-import lexical_analyzer as lexer
-
-##### SYNTAX ANALYZER #####
-
-lexemes = []
-
-# For the lexeme table
-def table_contents(source):
-    prev = ""
-    temp, code_delim = "", ""
-    global error, lexemes, submit_now, response
-    error = 0
-
-    for line in source:                     # Iterate through the source code by line
-        sem.reset()
-        submit_now = False
-        response = ""
-        line_lexemes = []
-        if line[0] == "\n":                 # Add line break to signify that next element is a new line
-            line_lexemes.append([line[0], "line break"])
-            continue
-        tokens = lexer.tokenize_line(line)  # Split line into tokens
-
-        for position, lexeme in enumerate(tokens):      # Checking the lexemes one by one
-
-            if lexer.re.match(lexer.my.RE_hai_kw, lexeme):         # If this line contains HAI
-                if code_delim == "":                               # If this is the first HAI enocuntered in the program
-                    if len(tokens) == 2:                                # Check if line includes a version number
-                        line_lexemes.append([tokens[0], "code_delimiter"])
-                        code_delim = lexer.my.CODE_DELIMITER
-                        prev = lexer.my.VERSION
-                        continue                        # Proceed to version number token
-                else:                                              # Code Delimiter keyword has been repeated
-                    console_print("Syntax Error: Expected statement or expression at: " + str(lexeme))
-
-            if code_delim != lexer.my.CODE_DELIMITER or code_delim == 0:    # If code delimiter has not been encountered yet, all other statements
-                if lexeme not in ["BTW", "OBTW", "TLDR"]:                   # except for comments will result to an error
-                    error = 1
-                    console_print("Syntax Error: Statement or expression not inside the program's main function")
-                    break
-
-            para = [lexeme, prev, temp, code_delim, line_lexemes]   # Parameters to be passed to lexical analyzer
-            if (error == 0):
-                para = lexer.check_validity(para)       # Check the validity of current lexeme
-                prev = para[1]                          # Overwriting the variables with the returned value in the list
-                temp = para[2]
-                code_delim = para[3]
-                
-                if prev != 0:
-                    if prev == lexer.my.SINGLE_LINE_COMMENT:
-                        for j in range(position + 1, len(tokens)):          # catch single-line comments
-                            if temp != "": temp = temp + " " + tokens[j]
-                            else: temp = tokens[j]
-                        
-                        line_lexemes.append([temp, "comment"])
-                        temp = ""
-                        prev = 0
-                        break
-                    
-                    elif lexer.re.match(lexer.my.RE_obtw_kw, lexeme):       # Checks if there is another statement in the same
-                        if position != 0:                                   # line as OBTW
-                            error = 1
-                            console_print("Syntax Error: OBTW must have its own line")
-                            break
-                        else: continue
-                            
-                    elif lexer.re.match(lexer.my.RE_tldr_kw, lexeme):       # Checks if there is another statement in the same
-                        if position != len(tokens)-1:                       # line as TLDR
-                            error = 1
-                            console_print("Syntax Error: TLDR must have its own line")
-                            break
-                    
-                    elif prev == lexer.my.MULTI_LINE_COMMENT:               # Catches multi-line comments
-                        if position == 0 and lexeme != "OBTW":              # The whole line is a comment
-                                temp = " ".join(tokens)
-                                line_lexemes.append([temp, "comment"])
-                                temp = ""
-                        else:                                               # Comment is placed the same line as the comment keyword
-                            for j in range(position, len(tokens)):
-                                if temp != "": temp = temp + " " + tokens[j]
-                                else: temp = tokens[j]
-
-                            line_lexemes.append([temp, "comment"])
-                            temp = ""
-                        break
-            
-            if position == len(tokens)-1:   # End of line
-                if prev != 0:
-                    error = 1
-                    console_print("Syntax Error: Expected token " + str(prev))                
-
-        if error == 1: break
-        lexemes = lexemes + line_lexemes
-        global sym_table
-        sym_table = sem.get_variables()
-        pop_lex()
-        pop_sym()
-        sem.program(line_lexemes)
-
-        # Print to console when lolcode says to
-        if sem.output != "":
-            console_print(sem.output)
-
-        # Get input from GUI
-        if sem.wait_for_input:
-            while not submit_now:
-                time.sleep(0.1)
-            sem.given_input = response
-            sem.wait_for_input = False
-    
-    # If end of code has been processed but code delimiter is either not found or not in pair
-    if code_delim == lexer.my.CODE_DELIMITER:
-        console_print("Syntax Error: Expected token: KTHXBYE")
-    elif code_delim == "":
-        console_print("Syntax Error: Expected token: HAI")
-
-##### MAIN #####
 
 submit_now = False
 response = ""
@@ -156,7 +40,22 @@ def parse_program(program):
     # Syntax Analyzer
     global lexemes
     lexemes = []
-    table_contents(source_code)
+    # table_contents(source_code)
+    parser.table_contents(source_code)
+    lexemes = parser.get_lexemes()
+    pop_lex()
+
+    # Split by line
+    global lexeme_lines
+    lexeme_lines = []
+    lexeme_line = []
+    while len(lexemes) > 0:
+        if lexemes[0][0] =='\n':
+            lexeme_lines.append(lexeme_line)
+            lexemes.pop(0)
+            lexeme_line = []
+        else:
+            lexeme_line.append(lexemes.pop(0))
 
 
 # Populate Lexeme Table
@@ -178,6 +77,29 @@ def exec_lolcode():
     console_clear()
     program = editor.get(1.0, 'end')
     parse_program(program)
+
+    global submit_now, response, sym_table
+
+    # Main code execution loop
+    for line in lexeme_lines:
+        sem.reset()
+        submit_now = False
+        response = ""
+        sym_table = sem.get_variables()
+        pop_sym()
+
+        sem.program(line)
+
+        # Print to console when lolcode says to
+        if sem.output != "":
+            console_print(sem.output)
+
+        # Get input from GUI
+        if sem.wait_for_input:
+            while not submit_now:
+                time.sleep(0.1)
+            sem.given_input = response
+            sem.wait_for_input = False
 
 # Print to GUI console 
 def console_print(text):
