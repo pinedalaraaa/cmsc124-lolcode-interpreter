@@ -8,13 +8,13 @@ import lexical_analyzer as lexer
 
 ##### SYNTAX ANALYZER #####
 
-lexeme_table = []
+lexemes = []
 
 # For the lexeme table
 def table_contents(source):
     prev = ""
     temp, code_delim = "", ""
-    global error, lexeme_table, submit_now, response
+    global error, lexemes, submit_now, response
     error = 0
 
     for line in source:                     # Iterate through the source code by line
@@ -96,9 +96,10 @@ def table_contents(source):
                     console_print("Syntax Error: Expected token", prev)                
 
         if error == 1: break
-        lexeme_table = lexeme_table + line_lexemes
+        lexemes = lexemes + line_lexemes
         global sym_table
         sym_table = sem.get_variables()
+        pop_lex()
         pop_sym()
         sem.program(line_lexemes)
 
@@ -153,17 +154,10 @@ def parse_program(program):
     source_code = remove_spaces(code_lines)
 
     # Syntax Analyzer
-    global lexeme_table
-    lexeme_table = []
-    table_contents(source_code)
     global lexemes
-    lexemes = lexeme_table
+    lexemes = []
+    table_contents(source_code)
 
-    # Semantic Analyzer
-    if error == 0: 
-        lexemes_list = lexemes.copy()       # Create a copy of lexemes
-        # sem.program(lexemes_list)
-        
 
 # Populate Lexeme Table
 def pop_lex():
@@ -184,9 +178,6 @@ def exec_lolcode():
     console_clear()
     program = editor.get(1.0, 'end')
     parse_program(program)
-
-    # Temporary testing code
-    pop_lex()
 
 # Print to GUI console 
 def console_print(text):
