@@ -1,3 +1,4 @@
+import time
 import semantic_analyzer as sem
 from tkinter import *
 from tkinter import filedialog, ttk
@@ -13,10 +14,13 @@ lexeme_table = []
 def table_contents(source):
     prev = ""
     temp, code_delim = "", ""
-    global error, lexeme_table
+    global error, lexeme_table, submit_now, response
     error = 0
 
     for line in source:                     # Iterate through the source code by line
+        sem.reset()
+        submit_now = False
+        response = ""
         line_lexemes = []
         if line[0] == "\n":                 # Add line break to signify that next element is a new line
             line_lexemes.append([line[0], "line break"])
@@ -96,8 +100,17 @@ def table_contents(source):
         global sym_table
         sym_table = sem.get_variables()
         pop_sym()
-        print(line_lexemes)
-        #sem.program(line_lexemes)
+        sem.program(line_lexemes)
+
+        # Print to console when lolcode says to
+        if sem.output != "":
+            console_print(sem.output)
+
+        # Get input from GUI
+        if sem.wait_for_input:
+            while not submit_now:
+                time.sleep(0.1)
+            sem.given_input = response
     
     # If end of code has been processed but code delimiter is either not found or not in pair
     if code_delim == lexer.my.CODE_DELIMITER:
@@ -106,6 +119,9 @@ def table_contents(source):
         console_print("Syntax Error: Expected token: HAI")
 
 ##### MAIN #####
+
+submit_now = False
+response = ""
 
 root = Tk()
 root.title = ('Main Window')
@@ -188,10 +204,10 @@ def console_clear():
 
 # Give input
 def submit():
-    # Temporary testing code
+    global submit_now, response
+    submit_now = True
     response = console_in.get(1.0, 'end').strip()
     console_in.delete(1.0, 'end')
-    console_print(response)
 
     ### GUI ###
 

@@ -12,6 +12,17 @@ expressions = ["SUM OF","DIFF OF","PRODUKT OF","QUOSHUNT OF","MOD OF","BIGGR OF"
 arith = ["SUM OF","DIFF OF","PRODUKT OF","QUOSHUNT OF","MOD OF","BIGGR OF","SMALLR OF"]
 boolean = ["BOTH OF", "EITHER OF", "WON OF", "NOT", "ALL OF", "ANY OF", "BOTH SAEM", "DIFFRINT"]
 
+# Data transferred to and from main
+wait_for_input = False
+output = ""
+given_input = ""
+
+def reset():
+    global wait_for_input, output, given_input
+    wait_for_input = False
+    output = ""
+    given_input = ""
+
 def get_variables():
     return variables
 
@@ -98,6 +109,7 @@ def userinput(lexemes_list):
     print("input")
 
 def print_code(lexemes_list):
+    global output
     print("print")
     string = ""     #string to be printed
     while lexemes_list[1][1] != "line_break": #print all expression after VISIBLE keyword
@@ -129,6 +141,7 @@ def print_code(lexemes_list):
         
         
 
+    output = string
     print(string)            
 
 def function(lexemes_list):
