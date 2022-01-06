@@ -86,15 +86,16 @@ def exec_lolcode():
     program = editor.get(1.0, 'end')    # Get program from editor
     parse_program(program)              # Parse program
 
-    global submit_now, response, lexeme_lines
+    global submit_now, response, lexeme_lines, lexemes
 
     # Main code execution loop
+    line_index = 0
     for line in lexeme_lines:
         sem.reset()
         submit_now = False
         response = ""
 
-        sem.program(line)               # Run lolcode
+        sem.program(lexemes, line_index)               # Run lolcode
         pop_sym(sem.get_variables())    # Put variable data in symbol table
 
         # Print to console when lolcode says to
@@ -108,6 +109,8 @@ def exec_lolcode():
                 time.sleep(0.1)
             sem.given_input = response
             sem.wait_for_input = False
+        
+        line_index += 1
 
 # Print to GUI console 
 def console_print(text):
