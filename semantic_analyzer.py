@@ -58,7 +58,7 @@ def literal(lexemes_list):
         print(variables)
 
     except:
-        print("Error! Invalid Variable Declaration")
+        output = "Error! Invalid Variable Declaration"
 
 #===============================================================================================================================================================
 # STATEMENTS
@@ -70,9 +70,9 @@ def loop(lexemes_list):
         elif lexemes_list[2][0] == "NERFIN" and lexemes_list[3][0] == "YR":
             print()
         else:
-            print("Error! Loop operation not found")
+            output = "Error! Loop operation not found"
     else:
-        print("Error! Loop must have a proper label")
+        output = "Error! Loop must have a proper label"
         
 def if_block():
     print("if")
@@ -90,7 +90,7 @@ def declaration(lexemes_list):
             literal(lexemes_list)
 
     except Exception:
-        print("Error! Invalid Variable Declaration")
+        output = "Error! Invalid Variable Declaration"
     
 def comment(lexemes_list):
     if lexemes_list[0][0] == "BTW":         # Single-line comment
@@ -299,7 +299,7 @@ def expression(lexemes_list):
                         elif re.match(my.RE_literal_numbar, lexemes_list[4][0]):    #string is a float
                             op2 = float(lexemes_list[4][0])
                         else:
-                            print("Error! Invalid YARN format for number typecasting")
+                            output = "Error! Invalid YARN format for number typecasting"
                             exit()
                         lexemes_list.remove(lexemes_list[5])
                         lexemes_list.remove(lexemes_list[4])    
@@ -317,7 +317,7 @@ def expression(lexemes_list):
                     elif variables[lexemes_list[3][0]] == "FAIL":
                         op2 = 0
                     else:
-                        print("Error! Invalid variable value for operand in addition")
+                        output = "Error! Invalid variable value for operand in addition"
                         exit()                        
                     lexemes_list.remove(lexemes_list[3])
                     lexemes_list.remove(lexemes_list[2])
@@ -354,7 +354,7 @@ def expression(lexemes_list):
                         elif re.match(my.RE_literal_numbar, lexemes_list[4][0]):    #string is a float
                             op2 = float(lexemes_list[4][0])
                         else:
-                            print("Error! Invalid YARN format for number typecasting")
+                            output = "Error! Invalid YARN format for number typecasting"
                             exit()
                         lexemes_list.remove(lexemes_list[5])
                         lexemes_list.remove(lexemes_list[4])    
@@ -372,7 +372,7 @@ def expression(lexemes_list):
                     elif variables[lexemes_list[3][0]] == "FAIL":
                         op2 = 0
                     else:
-                        print("Error! Invalid variable value for operand in addition")
+                        output = "Error! Invalid variable value for operand in addition"
                         exit()                        
                     lexemes_list.remove(lexemes_list[3])
                     lexemes_list.remove(lexemes_list[2])
@@ -409,7 +409,7 @@ def expression(lexemes_list):
                         elif re.match(my.RE_literal_numbar, lexemes_list[4][0]):    #string is a float
                             op2 = float(lexemes_list[4][0])
                         else:
-                            print("Error! Invalid YARN format for number typecasting")
+                            output = "Error! Invalid YARN format for number typecasting"
                             exit()
                         lexemes_list.remove(lexemes_list[5])
                         lexemes_list.remove(lexemes_list[4])    
@@ -427,7 +427,7 @@ def expression(lexemes_list):
                     elif variables[lexemes_list[3][0]] == "FAIL":
                         op2 = 0
                     else:
-                        print("Error! Invalid variable value for operand in addition")
+                        output = "Error! Invalid variable value for operand in addition"
                         exit()                        
                     lexemes_list.remove(lexemes_list[3])
                     lexemes_list.remove(lexemes_list[2])
@@ -464,7 +464,7 @@ def expression(lexemes_list):
                         elif re.match(my.RE_literal_numbar, lexemes_list[4][0]):    #string is a float
                             op2 = float(lexemes_list[4][0])
                         else:
-                            print("Error! Invalid YARN format for number typecasting")
+                            output = "Error! Invalid YARN format for number typecasting"
                             exit()
                         lexemes_list.remove(lexemes_list[5])
                         lexemes_list.remove(lexemes_list[4])    
@@ -482,7 +482,7 @@ def expression(lexemes_list):
                     elif variables[lexemes_list[3][0]] == "FAIL":
                         op2 = 0
                     else:
-                        print("Error! Invalid variable value for operand in addition")
+                        output = "Error! Invalid variable value for operand in addition"
                         exit()                        
                     lexemes_list.remove(lexemes_list[3])
                     lexemes_list.remove(lexemes_list[2])
@@ -522,7 +522,7 @@ def expression(lexemes_list):
                             elif re.match(my.RE_literal_numbar, lexemes_list[6][0]):    #string is a float
                                 op2 = float(lexemes_list[6][0])
                             else:
-                                print("Error! Invalid YARN format for number typecasting")
+                                output = "Error! Invalid YARN format for number typecasting"
                                 exit()
                         lexemes_list.remove(lexemes_list[7])
                         lexemes_list.remove(lexemes_list[6])
@@ -542,7 +542,7 @@ def expression(lexemes_list):
                         elif variables[lexemes_list[5][0]] == "FAIL":
                             op2 = 0
                         else:
-                            print("Error! Invalid variable value for operand in addition")
+                            output = "Error! Invalid variable value for operand in addition"
                             exit()
                         lexemes_list.remove(lexemes_list[5])
                         lexemes_list.remove(lexemes_list[4])
@@ -584,7 +584,7 @@ def expression(lexemes_list):
                             elif re.match(my.RE_literal_numbar, lexemes_list[6][0]):    #string is a float
                                 op2 = float(lexemes_list[6][0])
                             else:
-                                print("Error! Invalid YARN format for number typecasting")
+                                output = "Error! Invalid YARN format for number typecasting"
                                 exit()
                         lexemes_list.remove(lexemes_list[7])
                         lexemes_list.remove(lexemes_list[6])
@@ -604,7 +604,7 @@ def expression(lexemes_list):
                         elif variables[lexemes_list[5][0]] == "FAIL":
                             op2 = 0
                         else:
-                            print("Error! Invalid variable value for operand in addition")
+                            output = "Error! Invalid variable value for operand in addition"
                             exit()
                         lexemes_list.remove(lexemes_list[5])
                         lexemes_list.remove(lexemes_list[4])
@@ -619,7 +619,7 @@ def expression(lexemes_list):
                         lexemes_list.remove(lexemes_list[0])
                         op2 = expression(lexemes_list)
                 else:
-                    print("Error! Invalid YARN format for number typecasting")
+                    output = "Error! Invalid YARN format for number typecasting"
                     exit()
                 
                 
@@ -633,7 +633,7 @@ def expression(lexemes_list):
             elif variables[lexemes_list[1][0]] == "FAIL":
                 op1 = 0
             else:
-                print("Error! Invalid variable value for operand in addition")
+                output = "Error! Invalid variable value for operand in addition"
                 exit()
             
             if lexemes_list[3][1] in types:                    
@@ -658,7 +658,7 @@ def expression(lexemes_list):
                     elif re.match(my.RE_literal_numbar, lexemes_list[4][0]):    #string is a float
                         op2 = float(lexemes_list[4][0])
                     else:
-                        print("Error! Invalid YARN format for number typecasting")
+                        output = "Error! Invalid YARN format for number typecasting"
                         exit()
                     lexemes_list.remove(lexemes_list[5])
                     lexemes_list.remove(lexemes_list[4])    
@@ -676,7 +676,7 @@ def expression(lexemes_list):
                 elif variables[lexemes_list[3][0]] == "FAIL":
                     op2 = 0
                 else:
-                    print("Error! Invalid variable value for operand in addition")
+                    output = "Error! Invalid variable value for operand in addition"
                     exit()                        
                 lexemes_list.remove(lexemes_list[3])
                 lexemes_list.remove(lexemes_list[2])
@@ -712,7 +712,7 @@ def expression(lexemes_list):
                     elif re.match(my.RE_literal_numbar, lexemes_list[3][0]):    #string is a float
                         op2 = float(lexemes_list[3][0])
                     else:
-                        print("Error! Invalid YARN format for number typecasting")
+                        output = "Error! Invalid YARN format for number typecasting"
                     lexemes_list.remove(lexemes_list[4])    
                     lexemes_list.remove(lexemes_list[3])
                     lexemes_list.remove(lexemes_list[2])
@@ -728,7 +728,7 @@ def expression(lexemes_list):
                 elif variables[lexemes_list[2][0]] == "FAIL":
                     op2 = 0
                 else:
-                    print("Error! Invalid variable value for operand in addition")
+                    output = "Error! Invalid variable value for operand in addition"
                     exit()                        
                 lexemes_list.remove(lexemes_list[2])
                 lexemes_list.remove(lexemes_list[1])
@@ -738,7 +738,7 @@ def expression(lexemes_list):
                 op2 = expression(lexemes_list)
                 print("op2: "+str(op2))
         else:
-            print("Error! Invalid operand")
+            output = "Error! Invalid operand"
             
         #evaluate op1 and op2 base on arithmetic operator used and store the answer to IT variable    
         if expr == "SUM OF":        

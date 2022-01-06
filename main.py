@@ -186,7 +186,6 @@ def exec_lolcode():
 
     # Temporary testing code
     pop_lex()
-    pop_sym()
 
 # Print to GUI console 
 def console_print(text):
