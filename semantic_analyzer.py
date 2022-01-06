@@ -106,7 +106,7 @@ def userinput(lexemes_list):
     global output, wait_for_input, given_input
     given_input = ""
     lexemes_list.remove(lexemes_list[0])
-    output = "Enter: "
+    # output = "Enter: "
     wait_for_input = True
     print("input")
 
@@ -806,6 +806,7 @@ def program(lexemes_list):
             code_start = 1
             return
     
+    # Check for input to store
     if given_input !="":
         variables[lexemes_list[0][0]] = given_input
         given_input = ""
@@ -818,7 +819,7 @@ def program(lexemes_list):
             else:    #statements
                 if lexeme[0] == "IM IN YR":
                     loop(lexemes_list)
-                elif lexeme[0] == "O RYL?":
+                elif lexeme[0] == "O RLY?":
                     if_block(lexeme[0])
                 elif lexeme[0] == "WTF?":
                     switch(lexemes_list)

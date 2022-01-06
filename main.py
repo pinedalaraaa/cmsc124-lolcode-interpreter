@@ -108,10 +108,12 @@ def exec_lolcode():
 
         # Get input from GUI
         if sem.wait_for_input:
+            global submit_flag
             # Wait until response is given
             console_in_label.wait_variable(submit_flag)
             sem.given_input = response
             sem.wait_for_input = False
+            submit_flag.set(0)
         
         line_index += 1
 
