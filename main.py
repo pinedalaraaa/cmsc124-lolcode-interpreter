@@ -37,7 +37,7 @@ def table_contents(source):
                         prev = lexer.my.VERSION
                         continue                        # Proceed to version number token
                 else:                                              # Code Delimiter keyword has been repeated
-                    console_print("Syntax Error: Expected statement or expression at:", lexeme)
+                    console_print("Syntax Error: Expected statement or expression at: " + str(lexeme))
 
             if code_delim != lexer.my.CODE_DELIMITER or code_delim == 0:    # If code delimiter has not been encountered yet, all other statements
                 if lexeme not in ["BTW", "OBTW", "TLDR"]:                   # except for comments will result to an error
@@ -93,7 +93,7 @@ def table_contents(source):
             if position == len(tokens)-1:   # End of line
                 if prev != 0:
                     error = 1
-                    console_print("Syntax Error: Expected token", prev)                
+                    console_print("Syntax Error: Expected token " + str(prev))                
 
         if error == 1: break
         lexemes = lexemes + line_lexemes
