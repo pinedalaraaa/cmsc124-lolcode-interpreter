@@ -13,12 +13,13 @@ lexeme_table = []
 def table_contents(source):
     prev = ""
     temp, code_delim = "", ""
-    global error
+    global error, lexeme_table
     error = 0
 
     for line in source:                     # Iterate through the source code by line
+        line_lexemes = []
         if line[0] == "\n":                 # Add line break to signify that next element is a new line
-            lexeme_table.append([line[0], "line break"])
+            line_lexemes.append([line[0], "line break"])
             continue
         tokens = lexer.tokenize_line(line)  # Split line into tokens
 
@@ -27,7 +28,7 @@ def table_contents(source):
             if lexer.re.match(lexer.my.RE_hai_kw, lexeme):         # If this line contains HAI
                 if code_delim == "":                               # If this is the first HAI enocuntered in the program
                     if len(tokens) == 2:                                # Check if line includes a version number
-                        lexeme_table.append([tokens[0], "code_delimiter"])
+                        line_lexemes.append([tokens[0], "code_delimiter"])
                         code_delim = lexer.my.CODE_DELIMITER
                         prev = lexer.my.VERSION
                         continue                        # Proceed to version number token
@@ -40,7 +41,7 @@ def table_contents(source):
                     console_print("Syntax Error: Statement or expression not inside the program's main function")
                     break
 
-            para = [lexeme, prev, temp, code_delim, lexeme_table]   # Parameters to be passed to lexical analyzer
+            para = [lexeme, prev, temp, code_delim, line_lexemes]   # Parameters to be passed to lexical analyzer
             if (error == 0):
                 para = lexer.check_validity(para)       # Check the validity of current lexeme
                 prev = para[1]                          # Overwriting the variables with the returned value in the list
@@ -53,7 +54,7 @@ def table_contents(source):
                             if temp != "": temp = temp + " " + tokens[j]
                             else: temp = tokens[j]
                         
-                        lexeme_table.append([temp, "comment"])
+                        line_lexemes.append([temp, "comment"])
                         temp = ""
                         prev = 0
                         break
@@ -74,14 +75,14 @@ def table_contents(source):
                     elif prev == lexer.my.MULTI_LINE_COMMENT:               # Catches multi-line comments
                         if position == 0 and lexeme != "OBTW":              # The whole line is a comment
                                 temp = " ".join(tokens)
-                                lexeme_table.append([temp, "comment"])
+                                line_lexemes.append([temp, "comment"])
                                 temp = ""
                         else:                                               # Comment is placed the same line as the comment keyword
                             for j in range(position, len(tokens)):
                                 if temp != "": temp = temp + " " + tokens[j]
                                 else: temp = tokens[j]
 
-                            lexeme_table.append([temp, "comment"])
+                            line_lexemes.append([temp, "comment"])
                             temp = ""
                         break
             
@@ -91,6 +92,12 @@ def table_contents(source):
                     console_print("Syntax Error: Expected token", prev)                
 
         if error == 1: break
+        lexeme_table = lexeme_table + line_lexemes
+        global sym_table
+        sym_table = sem.get_variables()
+        pop_sym()
+        print(line_lexemes)
+        #sem.program(line_lexemes)
     
     # If end of code has been processed but code delimiter is either not found or not in pair
     if code_delim == lexer.my.CODE_DELIMITER:
@@ -140,8 +147,6 @@ def parse_program(program):
         lexemes_list = lexemes.copy()       # Create a copy of lexemes
         # sem.program(lexemes_list)
         
-    global sym_table
-    sym_table = sem.get_variables()
 
 # Populate Lexeme Table
 def pop_lex():
@@ -184,7 +189,7 @@ def console_clear():
 # Give input
 def submit():
     # Temporary testing code
-    response = console_in.get(1.0, 'end')
+    response = console_in.get(1.0, 'end').strip()
     console_in.delete(1.0, 'end')
     console_print(response)
 
