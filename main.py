@@ -24,12 +24,15 @@ def remove_spaces(program):
 
 # Open lolcode file
 def loadfile():
+    # Ask to choose file
     root.filename = filedialog.askopenfilename(title="Select Folder", filetypes= (("LOLCode files","*.lol"),
                                               ("All files","*.*")))
 
+    # Open file
     file = open(root.filename, 'r')
     program = file.read()
 
+    # Put contents of file in editor
     editor.delete("1.0", "end")
     editor.insert(1.0, program)
 
@@ -40,12 +43,14 @@ def parse_program(program):
     # Syntax Analyzer
     global lexemes
     lexemes = []
-    # table_contents(source_code)
     parser.table_contents(source_code)
+
+    # Check for errors
     error, error_message = parser.get_error()
     if error == 1:
         console_print(error_message)
     else:
+        # If no errors, get the lexemes
         lexemes = parser.get_lexemes()
         pop_lex()
 
@@ -70,29 +75,27 @@ def pop_lex():
         lex_table.insert('', 'end', text=str(item[0]), values=(str(item[0]), str(item[1])))
 
 # Populate Symbol Table
-def pop_sym():
-    # Temporary testing code
+def pop_sym(sym_table):
     symbol_table.delete(*symbol_table.get_children())
     for key, value in sym_table.items():
         symbol_table.insert('', 'end', text=str(key), values=(str(key), str(value)))
 
 # Run lolcode program
 def exec_lolcode():
-    console_clear()
-    program = editor.get(1.0, 'end')
-    parse_program(program)
+    console_clear()                     # Clear console
+    program = editor.get(1.0, 'end')    # Get program from editor
+    parse_program(program)              # Parse program
 
-    global submit_now, response, sym_table
+    global submit_now, response, lexeme_lines
 
     # Main code execution loop
     for line in lexeme_lines:
         sem.reset()
         submit_now = False
         response = ""
-        sym_table = sem.get_variables()
-        pop_sym()
 
-        sem.program(line)
+        sem.program(line)               # Run lolcode
+        pop_sym(sem.get_variables())    # Put variable data in symbol table
 
         # Print to console when lolcode says to
         if sem.output != "":
@@ -100,6 +103,7 @@ def exec_lolcode():
 
         # Get input from GUI
         if sem.wait_for_input:
+            # Wait until response is given
             while not submit_now:
                 time.sleep(0.1)
             sem.given_input = response
