@@ -88,7 +88,7 @@ def exec_lolcode():
     program = editor.get(1.0, 'end')    # Get program from editor
     parse_program(program)              # Parse program
 
-    global submit_now, response, lexeme_lines, lex_copy
+    global submit_now, response, lexeme_lines
 
     # Main code execution loop
     line_index = 0
@@ -97,7 +97,7 @@ def exec_lolcode():
         submit_now = False
         response = ""
 
-        sem.program(lex_copy, line_index)               # Run lolcode
+        sem.program(lexeme_lines, line_index)               # Run lolcode
         pop_sym(sem.get_variables())    # Put variable data in symbol table
 
         # Print to console when lolcode says to
