@@ -52,6 +52,8 @@ def parse_program(program):
     else:
         # If no errors, get the lexemes
         lexemes = parser.get_lexemes()
+        global lex_copy
+        lex_copy = lexemes.copy()
         pop_lex()
 
         # Split by line
@@ -86,7 +88,7 @@ def exec_lolcode():
     program = editor.get(1.0, 'end')    # Get program from editor
     parse_program(program)              # Parse program
 
-    global submit_now, response, lexeme_lines, lexemes
+    global submit_now, response, lexeme_lines, lex_copy
 
     # Main code execution loop
     line_index = 0
@@ -95,7 +97,7 @@ def exec_lolcode():
         submit_now = False
         response = ""
 
-        sem.program(lexemes, line_index)               # Run lolcode
+        sem.program(lex_copy, line_index)               # Run lolcode
         pop_sym(sem.get_variables())    # Put variable data in symbol table
 
         # Print to console when lolcode says to
