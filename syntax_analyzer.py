@@ -6,7 +6,7 @@ lexeme_table = []
 def table_contents(line):
     prev = ""
     temp, code_delim = "", ""
-    global error
+    global error, error_message
     error = 0
 
     if line[0] == "\n":                 # Add line break to signify that next element is a new line
@@ -24,12 +24,12 @@ def table_contents(line):
                     prev = lexer.my.VERSION
                     continue                        # Proceed to version number token
             else:                                              # Code Delimiter keyword has been repeated
-                print("Syntax Error: Expected statement or expression at:", lexeme)
+                error_message = ("Syntax Error: Expected statement or expression at:", lexeme)
 
         if code_delim != lexer.my.CODE_DELIMITER or code_delim == 0:    # If code delimiter has not been encountered yet, all other statements
             if lexeme not in ["BTW", "OBTW", "TLDR"]:                   # except for comments will result to an error
                 error = 1
-                print("Syntax Error: Statement or expression not inside the program's main function")
+                error_message = ("Syntax Error: Statement or expression not inside the program's main function")
                 break
 
         para = [lexeme, prev, temp, code_delim, lexeme_table]   # Parameters to be passed to lexical analyzer
@@ -53,14 +53,14 @@ def table_contents(line):
                 elif lexer.re.match(lexer.my.RE_obtw_kw, lexeme):       # Checks if there is another statement in the same
                     if position != 0:                                   # line as OBTW
                         error = 1
-                        print("Syntax Error: OBTW must have its own line")
+                        error_message = ("Syntax Error: OBTW must have its own line")
                         break
                     else: continue
                         
                 elif lexer.re.match(lexer.my.RE_tldr_kw, lexeme):       # Checks if there is another statement in the same
                     if position != len(tokens)-1:                       # line as TLDR
                         error = 1
-                        print("Syntax Error: TLDR must have its own line")
+                        error_message = ("Syntax Error: TLDR must have its own line")
                         break
                 
                 elif prev == lexer.my.MULTI_LINE_COMMENT:               # Catches multi-line comments
@@ -80,15 +80,15 @@ def table_contents(line):
         if position == len(tokens)-1:   # End of line
             if prev != 0:
                 error = 1
-                print("Syntax Error: Expected token", prev)                
+                error_message = ("Syntax Error: Expected token", prev)                
 
     if error == 1: return
     
     # If end of code has been processed but code delimiter is either not found or not in pair
     if code_delim == lexer.my.CODE_DELIMITER:
-        print("Syntax Error: Expected token: KTHXBYE")
+        error_message = ("Syntax Error: Expected token: KTHXBYE")
     elif code_delim == "":
-        print("Syntax Error: Expected token: HAI")
+        error_message = ("Syntax Error: Expected token: HAI")
 
 
 # Returns list of lexemes
@@ -96,7 +96,7 @@ def get_lexemes():
     return lexeme_table
 
 def get_error():
-    return error
+    return error, error_message
 
 def clear():
     global lexeme_table

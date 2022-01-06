@@ -39,12 +39,14 @@ def parse_program(program):
         parser.table_contents(line)
         global lexemes
         lexemes = parser.get_lexemes()
-        errors = parser.get_error()
+        errors, error_message = parser.get_error()
 
         # Semantic Analyzer
         if errors == 0: 
             lexemes_list = lexemes.copy()       # Create a copy of lexemes
             # sem.program(lexemes_list)
+        else:
+            console_print(error_message)
             
         global sym_table
         sym_table = sem.get_variables()
@@ -73,7 +75,7 @@ def exec_lolcode():
 # Print to GUI console 
 def console_print(text):
     console.configure(state=NORMAL)
-    console.insert('end', text)
+    console.insert('end', text + '\n')
     console.configure(state=DISABLED)
     console.see('end')
 
