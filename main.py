@@ -2,7 +2,7 @@ import time
 import semantic_analyzer as sem
 from tkinter import *
 from tkinter import filedialog, ttk
-import syntax_analyzer_old as parser
+import syntax_analyzer as parser
 
 from tokens import RE_wonof_kw
 
@@ -42,20 +42,24 @@ def parse_program(program):
     lexemes = []
     # table_contents(source_code)
     parser.table_contents(source_code)
-    lexemes = parser.get_lexemes()
-    pop_lex()
+    error, error_message = parser.get_error()
+    if error == 1:
+        console_print(error_message)
+    else:
+        lexemes = parser.get_lexemes()
+        pop_lex()
 
-    # Split by line
-    global lexeme_lines
-    lexeme_lines = []
-    lexeme_line = []
-    while len(lexemes) > 0:
-        if lexemes[0][0] =='\n':
-            lexeme_lines.append(lexeme_line)
-            lexemes.pop(0)
-            lexeme_line = []
-        else:
-            lexeme_line.append(lexemes.pop(0))
+        # Split by line
+        global lexeme_lines
+        lexeme_lines = []
+        lexeme_line = []
+        while len(lexemes) > 0:
+            if lexemes[0][0] =='\n':
+                lexeme_lines.append(lexeme_line)
+                lexemes.pop(0)
+                lexeme_line = []
+            else:
+                lexeme_line.append(lexemes.pop(0))
 
 
 # Populate Lexeme Table
