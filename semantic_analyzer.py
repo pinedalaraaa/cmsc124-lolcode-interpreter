@@ -806,10 +806,13 @@ def expression(lexemes_list):
 code_start = 0
 def program(lexemes_list):
     global code_start, given_input
-    if code_start != 1:
+    while code_start != 1:
         if lexemes_list[0][0] == "HAI":
             code_start = 1
-            return
+            if lexemes_list[1][1] == "version_number":
+                lexemes_list.remove(lexemes_list[1])
+        lexemes_list.remove(lexemes_list[0])        
+        return
     
     # Check for input to store
     if given_input !="":
@@ -818,6 +821,7 @@ def program(lexemes_list):
 
     
     for lexeme in lexemes_list:
+        
         # Check flags first
         if multiline_comment == 1:
             comment(lexemes_list)
