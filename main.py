@@ -30,6 +30,9 @@ def loadfile():
     root.filename = filedialog.askopenfilename(title="Select Folder", filetypes= (("LOLCode files","*.lol"),
                                               ("All files","*.*")))
 
+    parser.clear()
+    sem.full_reset()
+
     # Open file
     file = open(root.filename, 'r')
     program = file.read()

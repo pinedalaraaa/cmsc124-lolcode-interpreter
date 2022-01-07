@@ -134,6 +134,11 @@ def table_contents(source):
         error_message = "Syntax Error: Expected token: IM IN YR"
     
 
+def clear():
+    global lexeme_table, error, error_message
+    lexeme_table = []
+    error = 0
+    error_message = ""
 
 # Returns list of lexemes
 def get_lexemes():
