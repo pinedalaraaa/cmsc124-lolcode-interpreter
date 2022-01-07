@@ -22,6 +22,7 @@ if_statement = 0
 else_statement = 0
 switch_case = 0
 loops = 0
+gtfo = 0
 
 def reset():
     global wait_for_input, output
@@ -98,7 +99,21 @@ def main_if_block(lexemes_list):
             if_statement = -1
     
 def switch_block(lexemes_list):
-    print("switch")
+    global gtfo
+    choice = variables["IT"]
+    
+    for lexeme in lexemes_list:
+        if choice == lexeme:
+            gtfo = 1
+            lexemes_list.remove(lexeme)
+            while gtfo == 1:
+                program(lexemes_list)
+            switch_case = 0
+        else:
+            lexemes_list.remove(lexeme)
+            return
+
+
 
 def declaration(lexemes_list):
     print("declaration")
@@ -827,6 +842,7 @@ def program(lexemes_list):
     global if_statement
     global else_statement
     global temp
+    global gtfo
 
     while code_start != 1:
         if lexemes_list[0][0] == "HAI":
@@ -863,7 +879,8 @@ def program(lexemes_list):
         elif else_statement == -1:
             lexemes_list.pop(0)
             break
-        elif switch_case == 1:
+        elif switch_case == 1 and lexeme[0] == "OMG":
+            lexemes_list.remove(lexeme)
             switch_block(lexemes_list)
         elif loops == 1:
             loop(lexemes_list)
@@ -878,7 +895,11 @@ def program(lexemes_list):
                     elif lexeme[0] == "O RLY?":
                         main_if_block(lexeme[0])
                     elif lexeme[0] == "WTF?":
-                        switch_block(lexemes_list)
+                        switch_case = 1
+                        lexemes_list.remove(lexeme)
+                    elif lexeme[0] == "GTFO":
+                        gtfo = 0
+                        lexemes_list.remove(lexeme)
                     elif lexeme[0] == "HOW IZ I":
                         function(lexemes_list)
                     elif lexeme[0] == "I HAS A":
