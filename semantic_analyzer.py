@@ -34,7 +34,7 @@ def literal(lexemes_list):
     try:
         print("literal")
 
-        if lexemes_list[1][0] == "ITZ":             # Variable has been initialized
+        if len(lexemes_list) > 1 and lexemes_list[1][0] == "ITZ":             # Variable has been initialized
             if lexemes_list[2][0] in variables:     # If variable value is the value of another variable
                 variables[lexemes_list[0][0]] = variables[lexemes_list[2][0]]
             else:                                   
@@ -156,28 +156,27 @@ def function(lexemes_list):
 
 def assignment(lexemes_list):
     print("assignment")
-    if lexemes_list[2][1] in types: #value that will be assigned is a literal 
-        variables[lexemes_list[0][0]] = lexemes_list[2][0]
+    if lexemes_list[3][1] in types: #value that will be assigned is a literal 
+        variables[lexemes_list[1][0]] = lexemes_list[3][0]
         print(variables)
-        lexemes_list.remove(lexemes_list[2])
-        lexemes_list.remove(lexemes_list[1])
 
-    elif lexemes_list[2][0] in variables:   #value will come from a variable
+    elif lexemes_list[1][0] in variables:   #value will come from a variable
         print("in variables")
-        print(variables[lexemes_list[2][0]])
+        print(variables[lexemes_list[0][0]])
         
         for key, value in variables.items():    #check if variable exists  
-            if key == lexemes_list[0][0]:
-                variables[key] = variables[lexemes_list[2][0]]
+            if key == lexemes_list[1][0]:
+                variables[key] = variables[lexemes_list[1][0]]
                 
-        variables[lexemes_list[0][0]] == variables[lexemes_list[2][0]]
+        variables[lexemes_list[1][0]] == variables[lexemes_list[3][0]]
         print(variables) 
         lexemes_list.remove(lexemes_list[2])
         lexemes_list.remove(lexemes_list[1])
 
     else:
-        print(lexemes_list[2][0])
-        temp = lexemes_list[0][0]
+        print(lexemes_list[1][0])
+        temp = lexemes_list[1][0]
+        lexemes_list.remove(lexemes_list[2])
         lexemes_list.remove(lexemes_list[1])
         lexemes_list.remove(lexemes_list[0])
         variables["IT"] = expression(lexemes_list)
