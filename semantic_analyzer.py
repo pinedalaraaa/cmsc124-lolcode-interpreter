@@ -841,8 +841,8 @@ def program(lexemes_list):
     global given_input
     global if_statement
     global else_statement
-    global temp
-    global gtfo
+    global switch_case
+    global temp, gtfo
 
     while code_start != 1:
         if lexemes_list[0][0] == "HAI":
