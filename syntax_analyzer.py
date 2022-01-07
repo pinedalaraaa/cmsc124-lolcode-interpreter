@@ -18,7 +18,13 @@ def table_contents(source):
         if line[0] == "\n":                 # Add line break to signify that next element is a new line
             lexeme_table.append([line[0], "line break"])
             continue
-        tokens = lexer.tokenize_line(line)  # Split line into tokens
+        
+        if lexer.re.match(lexer.my.RE_orly_kw, line):
+            tokens = ['O RLY?']
+        elif lexer.re.match(lexer.my.RE_wtf_kw, line):
+            tokens = ['WTF?']
+        else:
+            tokens = lexer.tokenize_line(line)  # Split line into tokens
 
         for position, lexeme in enumerate(tokens):      # Checking the lexemes one by one
 
@@ -55,11 +61,12 @@ def table_contents(source):
                 else:                                              # Code Delimiter keyword has been repeated
                     error_message = str("Syntax Error: Expected statement or expression at:" + str(lexeme))
 
-            if code_delim != lexer.my.CODE_DELIMITER or code_delim == 0:    # If code delimiter has not been encountered yet, all other statements
-                if lexeme not in ["BTW", "OBTW", "TLDR"]:                   # except for comments will result to an error
-                    error = 1
-                    error_message = "Syntax Error: Statement or expression not inside the program's main function"
-                    break
+            if (code_delim != lexer.my.CODE_DELIMITER or code_delim == 0):    # If code delimiter has not been encountered yet, all other statements
+                if prev != lexer.my.SINGLE_LINE_COMMENT and prev != lexer.my.MULTI_LINE_COMMENT:
+                    if lexeme not in ["BTW", "OBTW", "TLDR"]:                   # except for comments will result to an error
+                        error = 1
+                        error_message = "Syntax Error: Statement or expression not inside the program's main function"
+                        break
             
             para = [lexeme, prev, temp, code_delim, lexeme_table]   # Parameters to be passed to lexical analyzer
             if (error == 0):
