@@ -29,10 +29,6 @@ def loadfile():
     # Ask to choose file
     root.filename = filedialog.askopenfilename(title="Select Folder", filetypes= (("LOLCode files","*.lol"),
                                               ("All files","*.*")))
-
-    parser.clear()
-    sem.full_reset()
-
     # Open file
     file = open(root.filename, 'r')
     program = file.read()
@@ -89,6 +85,10 @@ def pop_sym(sym_table):
 
 # Run lolcode program
 def exec_lolcode():
+ 
+    parser.clear()
+    sem.full_reset()
+
     console_clear()                     # Clear console
     program = editor.get(1.0, 'end')    # Get program from editor
     parse_program(program)              # Parse program
