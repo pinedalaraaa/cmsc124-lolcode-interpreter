@@ -803,8 +803,9 @@ def expression(lexemes_list):
 
 #main semantic_analyzer
 code_start = 0
+temp = []
 def program(lexemes_list):
-    global code_start, given_input
+    global code_start, given_input, temp
     while code_start != 1:
         if lexemes_list[0][0] == "HAI":
             code_start = 1
@@ -815,8 +816,9 @@ def program(lexemes_list):
     
     # Check for input to store
     if given_input !="":
-        variables[lexemes_list[0][0]] = given_input
+        variables[temp[0]] = given_input
         given_input = ""
+        lexemes_list.pop(0)
 
     
     for lexeme in lexemes_list:
@@ -851,7 +853,9 @@ def program(lexemes_list):
                     else:
                         expression(lexemes_list)
 
-                    lexemes_list.pop(0)
+                    if wait_for_input:
+                        temp = lexemes_list[0]
+                    lexemes_list.pop()
             else:
                 print("end of program")
                 break
