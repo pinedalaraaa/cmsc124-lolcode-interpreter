@@ -155,7 +155,7 @@ def print_code(lexemes_list):
     global output
     print("print")
     string = ""     #string to be printed
-    for lexeme in lexemes_list: #print all expression after VISIBLE keyword
+    while len(lexemes_list) > 1: #print all expression after VISIBLE keyword
         
         if lexemes_list[1][1] == "string_delimiter":    #if it is a string concatenate it to string
             temp = lexemes_list[2][0] + " "
