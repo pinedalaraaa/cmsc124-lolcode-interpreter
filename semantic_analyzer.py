@@ -803,7 +803,618 @@ def expression(lexemes_list):
         
         print(variables["IT"])
         return variables["IT"]    
+    elif expr in boolean:
+        if expr == "NOT":
+            op1 = ""
+            if lexemes_list[1][0] == "WIN": #true
+                op1 = "WIN"
+                lexemes_list.remove(lexemes_list[1])
+            elif lexemes_list[1][0] == "FAIL": #false 
+                op1 = "FAIL"
+                lexemes_list.remove(lexemes_list[1])
+            elif lexemes_list[1][1] == "numbr_literal" or lexemes_list[1][1] == "numbar_literal":                   
+                if int(lexemes_list[1][0]) == 0:
+                    op1 = "FAIL"
+                else:
+                    op1 = "WIN"
+                lexemes_list.remove(lexemes_list[1])
+            elif lexemes_list[1][1] == "string_delimiter": #string
+                if len(lexemes_list[2][0]) == 0:
+                    op1 = "FAIL"
+                else:
+                    op1 = "WIN"
+                lexemes_list.remove(lexemes_list[3])
+                lexemes_list.remove(lexemes_list[2])
+                lexemes_list.remove(lexemes_list[1])        
+            elif lexemes_list[1][0] in variables:
+                if variables[lexemes_list[1][0]] == "WIN": #value = true 
+                    op1 = "WIN"
+                elif variables[lexemes_list[1][0]] == "FAIL": #value = false
+                    op1 = "FAIL"
+                elif re.match(my.RE_literal_numbr, variables[lexemes_list[1][0]]) or re.match(my.RE_literal_numbar, variables[lexemes_list[1][0]]): #value is a number
+                    if int(variables[lexemes_list[1][0]]) == 0:    #if 0, false 
+                        op1 = "FAIL"
+                    else:                               #else, true
+                        op1 = "WIN"
+                elif re.match(my.RE_yarn_literal, variables[lexemes_list[1][0]]):  #if value is a string
+                    if len(variables[lexemes_list[1][0]]) == 0:        #if empty false
+                        op1 = "FAIL"
+                    else:
+                        op1 = "WIN" 
+                lexemes_list.remove(lexemes_list[1])
+            elif lexemes_list[1][0] in expressions:  
+                lexemes_list.remove(lexemes_list[0])
+                op1 = expressions(lexemes_list[0])  #evaluate it
+                                                    #typecast the value if number to TROOF                                
+                if re.match(my.RE_literal_numbar, op1) or re.match(my.RE_literal_numbr, op1):
+                    if int(op1) == 0:
+                        op1 = "FAIL"
+                    else:
+                        op1 = "WIN"
+            variables["IT"] = not_expr(op1)                    
+
+        elif expr  == "ALL OF" or expr == "ANY OF":
+            print("ALL OF/ANY OF not yet implemented")
+        else:
+            op1 = ""
+            op2 = ""
+            if lexemes_list[1][0] == "WIN": #op1 = true 
+                op1 = "WIN"
+                if lexemes_list[3][0] == "WIN": #op2 = true
+                    op2 = "WIN"
+                    lexemes_list.remove(lexemes_list[3])
+                    lexemes_list.remove(lexemes_list[2])
+                    lexemes_list.remove(lexemes_list[1])
+                elif lexemes_list[3][0] == "FAIL": #op2 = false
+                    op2 = "FAIL"
+                    lexemes_list.remove(lexemes_list[3])
+                    lexemes_list.remove(lexemes_list[2])
+                    lexemes_list.remove(lexemes_list[1])
+                elif lexemes_list[3][1] == "numbr_literal" or lexemes_list[3][1] == "numbar_literal":
+                    if int(lexemes_list[3][1]) == 0:
+                        op2 = "FAIL" #op2 is zero = false
+                    
+                    else:
+                        op2 = "WIN" #op2 is non-zero = true
+                    lexemes_list.remove(lexemes_list[3])
+                    lexemes_list.remove(lexemes_list[2])
+                    lexemes_list.remove(lexemes_list[1])    
+                        
+                elif lexemes_list[3][1] == "string_delimiter":
+                    if len(lexemes_list[4][0]) == 0: #string is empty = false
+                        op2 = "FAIL"
+                    else:
+                        op2 = "WIN"
+                    lexemes_list.remove(lexemes_list[5])
+                    lexemes_list.remove(lexemes_list[4])
+                    lexemes_list.remove(lexemes_list[3])
+                    lexemes_list.remove(lexemes_list[2])
+                    lexemes_list.remove(lexemes_list[1])
+                elif lexemes_list[3][0] in variables:
+                    if variables[lexemes_list[3][0]] == "WIN": #value = true 
+                        op2 = "WIN"
+                    elif variables[lexemes_list[3][0]] == "FAIL": #value = false
+                        op2 = "FAIL"
+                    elif re.match(my.RE_literal_numbr, variables[lexemes_list[3][0]]) or re.match(my.RE_literal_numbar, variables[lexemes_list[3][0]]): #value is a number
+                        if int(variables[lexemes_list[3][0]]) == 0:    #if 0, false 
+                            op2 = "FAIL"
+                        else:                               #else, true
+                            op2 = "WIN"
+                    elif re.match(my.RE_yarn_literal, variables[lexemes_list[3][0]]):  #if value is a string
+                        if len(variables[lexemes_list[3][0]]) == 0:        #if empty false
+                            op2 = "FAIL"
+                        else:
+                            op2 = "WIN"
+                    lexemes_list.remove(lexemes_list[3])
+                    lexemes_list.remove(lexemes_list[2])
+                    lexemes_list.remove(lexemes_list[1])
+
+                elif lexemes_list[3][0] in expressions:
+                    lexemes_list.remove(lexemes_list[2])
+                    lexemes_list.remove(lexemes_list[1])
+                    lexemes_list.remove(lexemes_list[0])
+                    op2 = expressions(lexemes_list)  #evaluate it
+                                                    #typecast the value if number to TROOF                                
+                    if re.match(my.RE_literal_numbar, op2) or re.match(my.RE_literal_numbr, op2):
+                        if int(op2) == 0:
+                            op2 = "FAIL"
+                        else:
+                            op2 = "WIN"
+
+                
+            elif lexemes_list[1][0] == "FAIL": #op1 = false
+                op1 = "FAIL"
+                if lexemes_list[3][0] == "WIN": #op2 = true
+                    op2 = "WIN"
+                    lexemes_list.remove(lexemes_list[3])
+                    lexemes_list.remove(lexemes_list[2])
+                    lexemes_list.remove(lexemes_list[1])
+                elif lexemes_list[3][0] == "FAIL": #op2 = false
+                    op2 = "FAIL"
+                    lexemes_list.remove(lexemes_list[3])
+                    lexemes_list.remove(lexemes_list[2])
+                    lexemes_list.remove(lexemes_list[1])
+                elif lexemes_list[3][1] == "numbr_literal" or lexemes_list[3][1] == "numbar_literal":
+                    if int(lexemes_list[3][1]) == 0:
+                        op2 = "FAIL" #op2 is zero = false
+                    
+                    else:
+                        op2 = "WIN" #op2 is non-zero = true
+                    lexemes_list.remove(lexemes_list[3])
+                    lexemes_list.remove(lexemes_list[2])
+                    lexemes_list.remove(lexemes_list[1])    
+                        
+                elif lexemes_list[3][1] == "string_delimiter":
+                    if len(lexemes_list[4][0]) == 0: #string is empty = false
+                        op2 = "FAIL"
+                    else:
+                        op2 = "WIN"
+                    lexemes_list.remove(lexemes_list[5])
+                    lexemes_list.remove(lexemes_list[4])
+                    lexemes_list.remove(lexemes_list[3])
+                    lexemes_list.remove(lexemes_list[2])
+                    lexemes_list.remove(lexemes_list[1])
+                elif lexemes_list[3][0] in variables:
+                    if variables[lexemes_list[3][0]] == "WIN": #value = true 
+                        op2 = "WIN"
+                    elif variables[lexemes_list[3][0]] == "FAIL": #value = false
+                        op2 = "FAIL"
+                    elif re.match(my.RE_literal_numbr, variables[lexemes_list[3][0]]) or re.match(my.RE_literal_numbar, variables[lexemes_list[3][0]]): #value is a number
+                        if int(variables[lexemes_list[3][0]]) == 0:    #if 0, false 
+                            op2 = "FAIL"
+                        else:                               #else, true
+                            op2 = "WIN"
+                    elif re.match(my.RE_yarn_literal, variables[lexemes_list[3][0]]):  #if value is a string
+                        if len(variables[lexemes_list[3][0]]) == 0:        #if empty false
+                            op2 = "FAIL"
+                        else:
+                            op2 = "WIN"
+                    lexemes_list.remove(lexemes_list[3])
+                    lexemes_list.remove(lexemes_list[2])
+                    lexemes_list.remove(lexemes_list[1])
+                            
+                elif lexemes_list[3][0] in expressions:
+                    lexemes_list.remove(lexemes_list[2])
+                    lexemes_list.remove(lexemes_list[1])
+                    lexemes_list.remove(lexemes_list[0])
+                    op2 = expressions(lexemes_list)  #evaluate it
+                                                    #typecast the value if number to TROOF                                
+                    if re.match(my.RE_literal_numbar, op2) or re.match(my.RE_literal_numbr, op2):
+                        if int(op2) == 0:
+                            op2 = "FAIL"
+                        else:
+                            op2 = "WIN"
+                
+            elif lexemes_list[1][1] == "numbr_literal" or lexemes_list[1][1] == "numbar_literal": #op1 is a number
+                if int(lexemes_list[1][0]) == 0:    #if 0, false 
+                    op1 = "FAIL"
+                    if lexemes_list[3][0] == "WIN": #op2 = true
+                        op2 = "WIN"
+                        lexemes_list.remove(lexemes_list[3])
+                        lexemes_list.remove(lexemes_list[2])
+                        lexemes_list.remove(lexemes_list[1])
+                    elif lexemes_list[3][0] == "FAIL": #op2 = false
+                        op2 = "FAIL"
+                        lexemes_list.remove(lexemes_list[3])
+                        lexemes_list.remove(lexemes_list[2])
+                        lexemes_list.remove(lexemes_list[1])
+                    elif lexemes_list[3][1] == "numbr_literal" or lexemes_list[3][1] == "numbar_literal":
+                        if int(lexemes_list[3][1]) == 0:
+                            op2 = "FAIL" #op2 is zero = false
+                        
+                        else:
+                            op2 = "WIN" #op2 is non-zero = true
+                        lexemes_list.remove(lexemes_list[3])
+                        lexemes_list.remove(lexemes_list[2])
+                        lexemes_list.remove(lexemes_list[1])    
+                            
+                    elif lexemes_list[3][1] == "string_delimiter":
+                        if len(lexemes_list[4][0]) == 0: #string is empty = false
+                            op2 = "FAIL"
+                        else:
+                            op2 = "WIN"
+                        lexemes_list.remove(lexemes_list[5])
+                        lexemes_list.remove(lexemes_list[4])
+                        lexemes_list.remove(lexemes_list[3])
+                        lexemes_list.remove(lexemes_list[2])
+                        lexemes_list.remove(lexemes_list[1])
+                    elif lexemes_list[3][0] in variables:
+                        if variables[lexemes_list[3][0]] == "WIN": #value = true 
+                            op2 = "WIN"
+                        elif variables[lexemes_list[3][0]] == "FAIL": #value = false
+                            op2 = "FAIL"
+                        elif re.match(my.RE_literal_numbr, variables[lexemes_list[3][0]]) or re.match(my.RE_literal_numbar, variables[lexemes_list[3][0]]): #value is a number
+                            if int(variables[lexemes_list[3][0]]) == 0:    #if 0, false 
+                                op2 = "FAIL"
+                            else:                               #else, true
+                                op2 = "WIN"
+                        elif re.match(my.RE_yarn_literal, variables[lexemes_list[3][0]]):  #if value is a string
+                            if len(variables[lexemes_list[3][0]]) == 0:        #if empty false
+                                op2 = "FAIL"
+                            else:
+                                op2 = "WIN"
+                        lexemes_list.remove(lexemes_list[3])
+                        lexemes_list.remove(lexemes_list[2])
+                        lexemes_list.remove(lexemes_list[1])
+                                
+                    elif lexemes_list[3][0] in expressions:
+                        lexemes_list.remove(lexemes_list[2])
+                        lexemes_list.remove(lexemes_list[1])
+                        lexemes_list.remove(lexemes_list[0])
+                        op2 = expressions(lexemes_list)  #evaluate it
+                                                        #typecast the value if number to TROOF                                
+                        if re.match(my.RE_literal_numbar, op2) or re.match(my.RE_literal_numbr, op2):
+                            if int(op2) == 0:
+                                op2 = "FAIL"
+                            else:
+                                op2 = "WIN"
+                else:                               #else, true
+                    op1 = "WIN"
+                    if lexemes_list[3][0] == "WIN": #op2 = true
+                        op2 = "WIN"
+                        lexemes_list.remove(lexemes_list[3])
+                        lexemes_list.remove(lexemes_list[2])
+                        lexemes_list.remove(lexemes_list[1])
+                    elif lexemes_list[3][0] == "FAIL": #op2 = false
+                        op2 = "FAIL"
+                        lexemes_list.remove(lexemes_list[3])
+                        lexemes_list.remove(lexemes_list[2])
+                        lexemes_list.remove(lexemes_list[1])
+                    elif lexemes_list[3][1] == "numbr_literal" or lexemes_list[3][1] == "numbar_literal":
+                        if int(lexemes_list[3][1]) == 0:
+                            op2 = "FAIL" #op2 is zero = false
+                        
+                        else:
+                            op2 = "WIN" #op2 is non-zero = true
+                        lexemes_list.remove(lexemes_list[3])
+                        lexemes_list.remove(lexemes_list[2])
+                        lexemes_list.remove(lexemes_list[1])    
+                            
+                    elif lexemes_list[3][1] == "string_delimiter":
+                        if len(lexemes_list[4][0]) == 0: #string is empty = false
+                            op2 = "FAIL"
+                        else:
+                            op2 = "WIN"
+                        lexemes_list.remove(lexemes_list[5])
+                        lexemes_list.remove(lexemes_list[4])
+                        lexemes_list.remove(lexemes_list[3])
+                        lexemes_list.remove(lexemes_list[2])
+                        lexemes_list.remove(lexemes_list[1])
+                    elif lexemes_list[3][0] in variables:
+                        if variables[lexemes_list[3][0]] == "WIN": #value = true 
+                            op2 = "WIN"
+                        elif variables[lexemes_list[3][0]] == "FAIL": #value = false
+                            op2 = "FAIL"
+                        elif re.match(my.RE_literal_numbr, variables[lexemes_list[3][0]]) or re.match(my.RE_literal_numbar, variables[lexemes_list[3][0]]): #value is a number
+                            if int(variables[lexemes_list[3][0]]) == 0:    #if 0, false 
+                                op2 = "FAIL"
+                            else:                               #else, true
+                                op2 = "WIN"
+                        elif re.match(my.RE_yarn_literal, variables[lexemes_list[3][0]]):  #if value is a string
+                            if len(variables[lexemes_list[3][0]]) == 0:        #if empty false
+                                op2 = "FAIL"
+                            else:
+                                op2 = "WIN"
+                        lexemes_list.remove(lexemes_list[3])
+                        lexemes_list.remove(lexemes_list[2])
+                        lexemes_list.remove(lexemes_list[1])
+                                
+                    elif lexemes_list[3][0] in expressions:
+                        lexemes_list.remove(lexemes_list[2])
+                        lexemes_list.remove(lexemes_list[1])
+                        lexemes_list.remove(lexemes_list[0])
+                        op2 = expressions(lexemes_list)  #evaluate it
+                                                        #typecast the value if number to TROOF                                
+                        if re.match(my.RE_literal_numbar, op2) or re.match(my.RE_literal_numbr, op2):
+                            if int(op2) == 0:
+                                op2 = "FAIL"
+                            else:
+                                op2 = "WIN"
+                    
+            elif lexemes_list[1][1] == "string_delimiter":  #if op1 is a string
+                if len(lexemes_list[2][0]) == 0:        #if empty false
+                    op1 = "FAIL"
+                    if lexemes_list[5][0] == "WIN": #op2 = true
+                        op2 = "WIN"
+                        lexemes_list.remove(lexemes_list[5])
+                        lexemes_list.remove(lexemes_list[4])
+                        lexemes_list.remove(lexemes_list[3])
+                        lexemes_list.remove(lexemes_list[2])
+                        lexemes_list.remove(lexemes_list[1])
+                    elif lexemes_list[5][0] == "FAIL": #op2 = false
+                        op2 = "FAIL"
+                        lexemes_list.remove(lexemes_list[5])
+                        lexemes_list.remove(lexemes_list[4])
+                        lexemes_list.remove(lexemes_list[3])
+                        lexemes_list.remove(lexemes_list[2])
+                        lexemes_list.remove(lexemes_list[1])
+                    elif lexemes_list[5][1] == "numbr_literal" or lexemes_list[5][1] == "numbar_literal":
+                        if int(lexemes_list[5][0]) == 0:
+                            op2 = "FAIL" #op2 is zero = false
+                        
+                        else:
+                            op2 = "WIN" #op2 is non-zero = true
+                        lexemes_list.remove(lexemes_list[5])    
+                        lexemes_list.remove(lexemes_list[4])    
+                        lexemes_list.remove(lexemes_list[3])
+                        lexemes_list.remove(lexemes_list[2])
+                        lexemes_list.remove(lexemes_list[1])    
+                            
+                    elif lexemes_list[5][1] == "string_delimiter":
+                        if len(lexemes_list[6][0]) == 0: #string is empty = false
+                            op2 = "FAIL"
+                        else:
+                            op2 = "WIN"
+                        lexemes_list.remove(lexemes_list[7])    
+                        lexemes_list.remove(lexemes_list[6])    
+                        lexemes_list.remove(lexemes_list[5])
+                        lexemes_list.remove(lexemes_list[4])
+                        lexemes_list.remove(lexemes_list[3])
+                        lexemes_list.remove(lexemes_list[2])
+                        lexemes_list.remove(lexemes_list[1])
+                    elif lexemes_list[5][0] in variables:
+                        if variables[lexemes_list[5][0]] == "WIN": #value = true 
+                            op2 = "WIN"
+                        elif variables[lexemes_list[5][0]] == "FAIL": #value = false
+                            op2 = "FAIL"
+                        elif re.match(my.RE_literal_numbr, variables[lexemes_list[5][0]]) or re.match(my.RE_literal_numbar, variables[lexemes_list[5][0]]): #value is a number
+                            if int(variables[lexemes_list[5][0]]) == 0:    #if 0, false 
+                                op2 = "FAIL"
+                            else:                               #else, true
+                                op2 = "WIN"
+                        elif re.match(my.RE_yarn_literal, variables[lexemes_list[5][0]]):  #if value is a string
+                            if len(variables[lexemes_list[5][0]]) == 0:        #if empty false
+                                op2 = "FAIL"
+                            else:
+                                op2 = "WIN"
+                        lexemes_list.remove(lexemes_list[5])        
+                        lexemes_list.remove(lexemes_list[4])        
+                        lexemes_list.remove(lexemes_list[3])
+                        lexemes_list.remove(lexemes_list[2])
+                        lexemes_list.remove(lexemes_list[1])
+                                
+                    elif lexemes_list[5][0] in expressions:
+                        lexemes_list.remove(lexemes_list[4])
+                        lexemes_list.remove(lexemes_list[3])
+                        lexemes_list.remove(lexemes_list[2])
+                        lexemes_list.remove(lexemes_list[1])
+                        lexemes_list.remove(lexemes_list[0])
+                        op2 = expressions(lexemes_list)  #evaluate it
+                                                        #typecast the value if number to TROOF                                
+                        if re.match(my.RE_literal_numbar, op2) or re.match(my.RE_literal_numbr, op2):
+                            if int(op2) == 0:
+                                op2 = "FAIL"
+                            else:
+                                op2 = "WIN"
+                else:
+                    op1 = "WIN"                         #if non-empty true
+                    if lexemes_list[5][0] == "WIN": #op2 = true
+                        op2 = "WIN"
+                        lexemes_list.remove(lexemes_list[5])
+                        lexemes_list.remove(lexemes_list[4])
+                        lexemes_list.remove(lexemes_list[3])
+                        lexemes_list.remove(lexemes_list[2])
+                        lexemes_list.remove(lexemes_list[1])
+                    elif lexemes_list[5][0] == "FAIL": #op2 = false
+                        op2 = "FAIL"
+                        lexemes_list.remove(lexemes_list[5])
+                        lexemes_list.remove(lexemes_list[4])
+                        lexemes_list.remove(lexemes_list[3])
+                        lexemes_list.remove(lexemes_list[2])
+                        lexemes_list.remove(lexemes_list[1])
+                    elif lexemes_list[5][1] == "numbr_literal" or lexemes_list[5][1] == "numbar_literal":
+                        if int(lexemes_list[5][0]) == 0:
+                            op2 = "FAIL" #op2 is zero = false
+                        
+                        else:
+                            op2 = "WIN" #op2 is non-zero = true
+                        lexemes_list.remove(lexemes_list[5])    
+                        lexemes_list.remove(lexemes_list[4])    
+                        lexemes_list.remove(lexemes_list[3])
+                        lexemes_list.remove(lexemes_list[2])
+                        lexemes_list.remove(lexemes_list[1])    
+                            
+                    elif lexemes_list[5][1] == "string_delimiter":
+                        if len(lexemes_list[6][0]) == 0: #string is empty = false
+                            op2 = "FAIL"
+                        else:
+                            op2 = "WIN"
+                        lexemes_list.remove(lexemes_list[7])    
+                        lexemes_list.remove(lexemes_list[6])    
+                        lexemes_list.remove(lexemes_list[5])
+                        lexemes_list.remove(lexemes_list[4])
+                        lexemes_list.remove(lexemes_list[3])
+                        lexemes_list.remove(lexemes_list[2])
+                        lexemes_list.remove(lexemes_list[1])
+                    elif lexemes_list[5][0] in variables:
+                        if variables[lexemes_list[5][0]] == "WIN": #value = true 
+                            op2 = "WIN"
+                        elif variables[lexemes_list[5][0]] == "FAIL": #value = false
+                            op2 = "FAIL"
+                        elif re.match(my.RE_literal_numbr, variables[lexemes_list[5][0]]) or re.match(my.RE_literal_numbar, variables[lexemes_list[5][0]]): #value is a number
+                            if int(variables[lexemes_list[5][0]]) == 0:    #if 0, false 
+                                op2 = "FAIL"
+                            else:                               #else, true
+                                op2 = "WIN"
+                        elif re.match(my.RE_yarn_literal, variables[lexemes_list[5][0]]):  #if value is a string
+                            if len(variables[lexemes_list[5][0]]) == 0:        #if empty false
+                                op2 = "FAIL"
+                            else:
+                                op2 = "WIN"
+                        lexemes_list.remove(lexemes_list[5])        
+                        lexemes_list.remove(lexemes_list[4])        
+                        lexemes_list.remove(lexemes_list[3])
+                        lexemes_list.remove(lexemes_list[2])
+                        lexemes_list.remove(lexemes_list[1])
+                                
+                    elif lexemes_list[5][0] in expressions:
+                        lexemes_list.remove(lexemes_list[4])
+                        lexemes_list.remove(lexemes_list[3])
+                        lexemes_list.remove(lexemes_list[2])
+                        lexemes_list.remove(lexemes_list[1])
+                        lexemes_list.remove(lexemes_list[0])
+                        op2 = expressions(lexemes_list)  #evaluate it
+                                                        #typecast the value if number to TROOF                                
+                        if re.match(my.RE_literal_numbar, op2) or re.match(my.RE_literal_numbr, op2):
+                            if int(op2) == 0:
+                                op2 = "FAIL"
+                            else:
+                                op2 = "WIN"
+                
+            elif lexemes_list[1][0] in variables:   #if op1 is a variable get its value then typecast to TROOF         
+                if variables[lexemes_list[1][0]] == "WIN": #value = true 
+                    op1 = "WIN"
+                elif variables[lexemes_list[1][0]] == "FAIL": #value = false
+                    op1 = "FAIL"
+                elif re.match(my.RE_literal_numbr, variables[lexemes_list[1][0]]) or re.match(my.RE_literal_numbar, variables[lexemes_list[1][0]]): #value is a number
+                    if int(variables[lexemes_list[1][0]]) == 0:    #if 0, false 
+                        op1 = "FAIL"
+                    else:                               #else, true
+                        op1 = "WIN"
+                elif re.match(my.RE_yarn_literal, variables[lexemes_list[1][0]]):  #if value is a string
+                    if len(variables[lexemes_list[1][0]]) == 0:        #if empty false
+                        op1 = "FAIL"
+                    else:
+                        op1 = "WIN"
+                
+                if lexemes_list[3][0] == "WIN": #op2 = true
+                    op2 = "WIN"
+                    lexemes_list.remove(lexemes_list[3])
+                    lexemes_list.remove(lexemes_list[2])
+                    lexemes_list.remove(lexemes_list[1])
+                elif lexemes_list[3][0] == "FAIL": #op2 = false
+                    op2 = "FAIL"
+                    lexemes_list.remove(lexemes_list[3])
+                    lexemes_list.remove(lexemes_list[2])
+                    lexemes_list.remove(lexemes_list[1])
+                elif lexemes_list[3][1] == "numbr_literal" or lexemes_list[3][1] == "numbar_literal":
+                    if int(lexemes_list[3][1]) == 0:
+                        op2 = "FAIL" #op2 is zero = false
+                    
+                    else:
+                        op2 = "WIN" #op2 is non-zero = true
+                    lexemes_list.remove(lexemes_list[3])
+                    lexemes_list.remove(lexemes_list[2])
+                    lexemes_list.remove(lexemes_list[1])    
+                        
+                elif lexemes_list[3][1] == "string_delimiter":
+                    if len(lexemes_list[4][0]) == 0: #string is empty = false
+                        op2 = "FAIL"
+                    else:
+                        op2 = "WIN"
+                    lexemes_list.remove(lexemes_list[5])
+                    lexemes_list.remove(lexemes_list[4])
+                    lexemes_list.remove(lexemes_list[3])
+                    lexemes_list.remove(lexemes_list[2])
+                    lexemes_list.remove(lexemes_list[1])
+                elif lexemes_list[3][0] in variables:
+                    if variables[lexemes_list[3][0]] == "WIN": #value = true 
+                        op2 = "WIN"
+                    elif variables[lexemes_list[3][0]] == "FAIL": #value = false
+                        op2 = "FAIL"
+                    elif re.match(my.RE_literal_numbr, variables[lexemes_list[3][0]]) or re.match(my.RE_literal_numbar, variables[lexemes_list[3][0]]): #value is a number
+                        if int(variables[lexemes_list[3][0]]) == 0:    #if 0, false 
+                            op2 = "FAIL"
+                        else:                               #else, true
+                            op2 = "WIN"
+                    elif re.match(my.RE_yarn_literal, variables[lexemes_list[3][0]]):  #if value is a string
+                        if len(variables[lexemes_list[3][0]]) == 0:        #if empty false
+                            op2 = "FAIL"
+                        else:
+                            op2 = "WIN"
+                    lexemes_list.remove(lexemes_list[3])
+                    lexemes_list.remove(lexemes_list[2])
+                    lexemes_list.remove(lexemes_list[1])
+
+                elif lexemes_list[3][0] in expressions:
+                    lexemes_list.remove(lexemes_list[2])
+                    lexemes_list.remove(lexemes_list[1])
+                    lexemes_list.remove(lexemes_list[0])
+                    op2 = expressions(lexemes_list)  #evaluate it
+                                                    #typecast the value if number to TROOF                                
+                    if re.match(my.RE_literal_numbar, op2) or re.match(my.RE_literal_numbr, op2):
+                        if int(op2) == 0:
+                            op2 = "FAIL"
+                        else:
+                            op2 = "WIN"
+                
+                                                #if non-empty true
             
+            elif lexemes_list[1][0] in expressions: #if op1 is an expression 
+                lexemes_list.remove(lexemes_list[0])
+                op1 = expressions(lexemes_list[0])  #evaluate it
+                                                    #typecast the value if number to TROOF                                
+                if re.match(my.RE_literal_numbar, op1) or re.match(my.RE_literal_numbr, op1):
+                    if int(op1) == 0:
+                        op1 = "FAIL"
+                    else:
+                        op1 = "WIN"
+                
+                if lexemes_list[2][0] == "WIN": #op2 = true
+                    op2 = "WIN"
+                    lexemes_list.remove(lexemes_list[2])
+                    lexemes_list.remove(lexemes_list[1])
+                elif lexemes_list[2][0] == "FAIL": #op2 = false
+                    op2 = "FAIL"
+                    lexemes_list.remove(lexemes_list[2])
+                    lexemes_list.remove(lexemes_list[1])
+                elif lexemes_list[2][1] == "numbr_literal" or lexemes_list[2][1] == "numbar_literal":
+                    if int(lexemes_list[2][1]) == 0:
+                        op2 = "FAIL" #op2 is zero = false
+                    
+                    else:
+                        op2 = "WIN" #op2 is non-zero = true
+                    lexemes_list.remove(lexemes_list[2])
+                    lexemes_list.remove(lexemes_list[1])    
+                        
+                elif lexemes_list[2][1] == "string_delimiter":
+                    if len(lexemes_list[3][0]) == 0: #string is empty = false
+                        op2 = "FAIL"
+                    else:
+                        op2 = "WIN"
+                    lexemes_list.remove(lexemes_list[4])
+                    lexemes_list.remove(lexemes_list[3])
+                    lexemes_list.remove(lexemes_list[2])
+                    lexemes_list.remove(lexemes_list[1])
+                elif lexemes_list[2][0] in variables:
+                    if variables[lexemes_list[2][0]] == "WIN": #value = true 
+                        op2 = "WIN"
+                    elif variables[lexemes_list[2][0]] == "FAIL": #value = false
+                        op2 = "FAIL"
+                    elif re.match(my.RE_literal_numbr, variables[lexemes_list[2][0]]) or re.match(my.RE_literal_numbar, variables[lexemes_list[2][0]]): #value is a number
+                        if int(variables[lexemes_list[2][0]]) == 0:    #if 0, false 
+                            op2 = "FAIL"
+                        else:                               #else, true
+                            op2 = "WIN"
+                    elif re.match(my.RE_yarn_literal, variables[lexemes_list[2][0]]):  #if value is a string
+                        if len(variables[lexemes_list[2][0]]) == 0:        #if empty false
+                            op2 = "FAIL"
+                        else:
+                            op2 = "WIN"
+                    lexemes_list.remove(lexemes_list[2])
+                    lexemes_list.remove(lexemes_list[1])
+
+                elif lexemes_list[2][0] in expressions:
+                    lexemes_list.remove(lexemes_list[1])
+                    lexemes_list.remove(lexemes_list[0])
+                    op2 = expressions(lexemes_list)  #evaluate it
+                                                    #typecast the value if number to TROOF                                
+                    if re.match(my.RE_literal_numbar, op2) or re.match(my.RE_literal_numbr, op2):
+                        if int(op2) == 0:
+                            op2 = "FAIL"
+                        else:
+                            op2 = "WIN"               
+
+
+            if expr == "BOTH OF": 
+                variables["IT"] = both(op1, op2)
+            elif expr == "EITHER OF":
+                variables["IT"] = either(op1,op2)
+            elif expr == "WON OF":
+                variables["IT"] = xor(op1, op2)
+
+        print(variables["IT"])     
+        return variables["IT"]        
         
 
             
