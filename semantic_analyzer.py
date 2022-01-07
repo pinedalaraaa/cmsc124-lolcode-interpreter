@@ -1,5 +1,3 @@
-import time
-import sys
 import re
 import tokens as my
 
@@ -20,6 +18,10 @@ given_input = ""
 
 # Flags
 multiline_comment = 0
+if_statement = 0
+else_statement = 0
+switch_case = 0
+loops = 0
 
 def reset():
     global wait_for_input, output
@@ -37,7 +39,6 @@ def full_reset():
 def get_variables():
     return variables
 
-#terminal symbol
 def literal(lexemes_list):
     try:
         print("literal")
@@ -85,9 +86,18 @@ def loop(lexemes_list):
     else:
         output = "Error! Loop must have a proper label"
         
-def if_block():
+def main_if_block(lexemes_list):
     print("if")
-def switch():
+    global if_else, if_statement, else_statement
+    if lexemes_list == "O RLY?":
+        if type(variables["IT"]) != None or variables["IT"] != False or variables["IT"] != 0:
+            if_statement = 1
+            else_statement = -1
+        else:
+            else_statement = 1
+            if_statement = -1
+    
+def switch_block(lexemes_list):
     print("switch")
 
 def declaration(lexemes_list):
@@ -808,11 +818,16 @@ def expression(lexemes_list):
     #             literal()
     
 
-#main semantic_analyzer
+# main semantic_analyzer
 code_start = 0
 temp = []
 def program(lexemes_list):
-    global code_start, given_input, temp
+    global code_start
+    global given_input
+    global if_statement
+    global else_statement
+    global temp
+
     while code_start != 1:
         if lexemes_list[0][0] == "HAI":
             code_start = 1
@@ -832,7 +847,27 @@ def program(lexemes_list):
         # Check flags first
         if multiline_comment == 1:
             comment(lexemes_list)
-
+        elif if_statement == 1:
+            if_statement = 0
+            lexemes_list.pop(0)
+            program(lexemes_list)
+            break
+        elif else_statement == 1:
+            else_statement = 0
+            lexemes_list.pop(0)
+            program(lexemes_list)
+            break
+        elif if_statement == -1:
+            lexemes_list.pop(0)
+            break
+        elif else_statement == -1:
+            lexemes_list.pop(0)
+            break
+        elif switch_case == 1:
+            switch_block(lexemes_list)
+        elif loops == 1:
+            loop(lexemes_list)
+        
         else:
             if lexeme[0] != "KTHXBYE":
                 if lexeme[0] == "\n": #line breaks                
@@ -841,9 +876,9 @@ def program(lexemes_list):
                     if lexeme[0] == "IM IN YR":
                         loop(lexemes_list)
                     elif lexeme[0] == "O RLY?":
-                        if_block(lexeme[0])
+                        main_if_block(lexeme[0])
                     elif lexeme[0] == "WTF?":
-                        switch(lexemes_list)
+                        switch_block(lexemes_list)
                     elif lexeme[0] == "HOW IZ I":
                         function(lexemes_list)
                     elif lexeme[0] == "I HAS A":
