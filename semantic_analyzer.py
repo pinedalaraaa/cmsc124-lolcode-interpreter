@@ -844,14 +844,8 @@ def program(lexemes_list):
     global given_input
     global if_statement
     global else_statement
-<<<<<<< Updated upstream
     global switch_case
     global temp, gtfo
-=======
-    global temp
-    global gtfo
-    global switch_case
->>>>>>> Stashed changes
 
     while code_start != 1:
         if lexemes_list[0][0] == "HAI":
