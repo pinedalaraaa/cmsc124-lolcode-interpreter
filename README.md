@@ -4,6 +4,8 @@
 
 This is an interpreter for the LOLCode Programming Language, a humorous esolang known for its playful syntax. Using Python, lexical, syntax, and semantic analyzers have been built to interpret LOLCODE programs. The lexical analyzer breaks down the source code into tokens, the syntax analyzer ensures the code adheres to LOLCODE's grammatical structure, and the semantic analyzer checks for meaningful and logical statements.
 
+## Demo
+[LOLCode demo.webm](https://github.com/user-attachments/assets/4a3fe438-07d1-49e1-8f78-0ec201cd8377)
 
 ## How to run
 1. Download the repository and navigate to its location in your computer.
